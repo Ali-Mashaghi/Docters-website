@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}درخواست‌های مشاوره — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>درخواست‌های مشاوره</h1>
+            <a href="{% url 'dashboard:home' %}" class="btn btn-glass btn-sm" style="margin-top:0.5rem;">بازگشت به داشبورد</a>
+        </div>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجو</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="نام، تلفن، ایمیل...">
+            </div>
+            <div class="filter-group">
+                <label for="status">وضعیت</label>
+                <select id="status" name="status" class="glass-input">
+                    <option value="">همه وضعیت‌ها</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="doctor">پزشک</label>
+                <select id="doctor" name="doctor" class="glass-input">
+                    <option value="">همه پزشکان</option>
+                    {% for doc in doctors %}
+                    <option value="{{ doc.pk }}" {% if selected_doctor == doc.pk|stringformat:"s" %}selected{% endif %}>{{ doc.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">فیلتر</button>
+        </form>
+
+        {% if consultations %}
+        <div class="table-wrapper glass">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>تلفن</th>
+                        <th>پزشک</th>
+                        <th>وضعیت</th>
+                        <th>تاریخ</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in consultations %}
+                    <tr>
+                        <td>{{ req.name }}</td>
+                        <td dir="ltr">{{ req.phone }}</td>
+                        <td>{{ req.doctor.name }}</td>
+                        <td><span class="status-badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
+                        <td>{{ req.created_at|date:"Y/m/d H:i" }}</td>
+                        <td><a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_doctor %}&doctor={{ selected_doctor }}{% endif %}">قبلی</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_doctor %}&doctor={{ selected_doctor }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_doctor %}&doctor={{ selected_doctor }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">📋</div>
+            <p>درخواستی یافت نشد.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

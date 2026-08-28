@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}پلتفرم مشاوره پزشکی{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="page-wrapper">
+        <nav class="navbar">
+            <div class="container navbar-inner">
+                <a href="{% url 'doctors:home' %}" class="logo">
+                    <span class="logo-icon">⚕</span>
+                    <span>مشاوره پزشکی</span>
+                </a>
+
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{% url 'doctors:doctor_list' %}">پزشکان</a></li>
+                    <li><a href="{% url 'articles:article_list' %}">مقالات</a></li>
+                    <li><a href="{% url 'doctors:home' %}#about">درباره ما</a></li>
+                    <li><a href="{% url 'doctors:home' %}#contact">تماس با ما</a></li>
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'dashboard:home' %}">پنل مدیریت</a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle" aria-label="تغییر تم">🌙</button>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-glass btn-sm">خروج</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-glass btn-sm">ورود</a>
+                    {% endif %}
+                    <button class="hamburger" id="hamburger" aria-label="منو">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        {% if messages %}
+        <div class="container" style="margin-top:1rem;">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="footer" id="contact">
+            <div class="container">
+                <div class="footer-grid">
+                    <div>
+                        <h4>پلتفرم مشاوره پزشکی</h4>
+                        <p>ارتباط مستقیم با بهترین پزشکان متخصص. درخواست مشاوره آنلاین و دریافت پاسخ سریع.</p>
+                    </div>
+                    <div>
+                        <h4>دسترسی سریع</h4>
+                        <a href="{% url 'doctors:doctor_list' %}">لیست پزشکان</a><br>
+                        <a href="{% url 'articles:article_list' %}">مقالات</a><br>
+                        <a href="{% url 'doctors:home' %}#about">درباره ما</a><br>
+                        {% if user.is_staff %}
+                        <a href="{% url 'dashboard:home' %}">پنل مدیریت</a>
+                        {% endif %}
+                    </div>
+                    <div id="about">
+                        <h4>درباره ما</h4>
+                        <p>پلتفرمی مدرن برای معرفی پزشکان و دریافت درخواست مشاوره. با امنیت بالا و رابط کاربری حرفه‌ای.</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    &copy; {% now "Y" %} پلتفرم مشاوره پزشکی — تمامی حقوق محفوظ است.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

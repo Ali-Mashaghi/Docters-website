@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} — مقالات{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <article class="article-detail glass-strong">
+            {% if article.cover_image %}
+            <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" class="article-cover">
+            {% endif %}
+
+            <div class="article-detail-body">
+                <a href="{% url 'articles:article_list' %}" class="btn btn-glass btn-sm" style="margin-bottom:1.5rem;">← بازگشت به مقالات</a>
+
+                <header class="article-header">
+                    <h1>{{ article.title }}</h1>
+                    <div class="article-meta">
+                        <time datetime="{{ article.created_at|date:'Y-m-d' }}">{{ article.created_at|date:"Y/m/d" }}</time>
+                        {% if article.author %}
+                        <span class="article-author">نویسنده: {{ article.author.get_full_name|default:article.author.username }}</span>
+                        {% endif %}
+                    </div>
+                    {% if article.excerpt %}
+                    <p class="article-lead">{{ article.excerpt }}</p>
+                    {% endif %}
+                </header>
+
+                <div class="article-content">
+                    {{ article.content|linebreaks }}
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}

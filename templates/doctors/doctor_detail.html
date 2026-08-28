@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}{{ doctor.name }} — {{ doctor.specialty }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="glass-strong doctor-profile-header">
+            {% if doctor.profile_image %}
+            <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="doctor-profile-image">
+            {% endif %}
+            <div class="doctor-profile-info">
+                <h1>{{ doctor.name }}</h1>
+                <span class="doctor-specialty-badge">{{ doctor.specialty }}</span>
+                <p class="doctor-bio-text">{{ doctor.bio|truncatewords:40 }}</p>
+                <a href="#consultation-form" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">درباره پزشک</h2>
+        <div class="glass detail-card">
+            <p class="doctor-bio-text">{{ doctor.bio }}</p>
+            {% if doctor.phone %}
+            <div class="detail-row">
+                <span class="detail-label">تلفن</span>
+                <span class="detail-value" dir="ltr">{{ doctor.phone }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% if doctor.portfolios.all %}
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">نمونه‌کارها</h2>
+        <p class="section-subtitle">نمونه‌هایی از کارهای انجام‌شده</p>
+        <div class="portfolio-grid">
+            {% for item in doctor.portfolios.all %}
+            <div class="portfolio-item glass">
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy">
+                <div class="portfolio-item-info">
+                    <p class="portfolio-item-title">{{ item.title }}</p>
+                    {% if item.description %}
+                    <p style="font-size:0.8rem;color:var(--color-text-secondary);">{{ item.description|truncatewords:15 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section" id="consultation-form">
+    <div class="container">
+        <h2 class="section-title">درخواست مشاوره</h2>
+        <p class="section-subtitle">فرم زیر را تکمیل کنید تا با شما تماس بگیریم</p>
+
+        <div class="glass-strong form-section">
+            {% if success %}
+            <div class="alert alert-success">
+                <strong>درخواست شما با موفقیت ثبت شد.</strong><br>
+                کارشناسان با شما تماس خواهند گرفت.
+            </div>
+            {% else %}
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary btn-block">ارسال درخواست</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

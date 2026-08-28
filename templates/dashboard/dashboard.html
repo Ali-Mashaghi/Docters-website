@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>داشبورد مدیریت</h1>
+            <p style="color:var(--color-text-secondary);margin-top:0.25rem;">خوش آمدید، {{ user.get_full_name|default:user.username }}</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card glass">
+                <div class="stat-value">{{ stats.doctor_count }}</div>
+                <div class="stat-label">پزشکان قابل دسترسی</div>
+            </div>
+            <div class="stat-card glass">
+                <div class="stat-value">{{ stats.total_requests }}</div>
+                <div class="stat-label">کل درخواست‌ها</div>
+            </div>
+            <div class="stat-card glass">
+                <div class="stat-value">{{ stats.pending_requests }}</div>
+                <div class="stat-label">درخواست‌های جدید</div>
+            </div>
+            <div class="stat-card glass">
+                <div class="stat-value">{{ stats.completed_requests }}</div>
+                <div class="stat-label">تکمیل‌شده</div>
+            </div>
+        </div>
+
+        <h2 class="section-title" style="font-size:1.25rem;margin-bottom:1.5rem;">پزشکان</h2>
+        {% if doctors %}
+        <div class="doctors-grid" style="margin-bottom:3rem;">
+            {% for doctor in doctors %}
+            <article class="doctor-card glass">
+                {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="doctor-card-image" loading="lazy">
+                {% endif %}
+                <div class="doctor-card-body">
+                    <h3 class="doctor-card-name">{{ doctor.name }}</h3>
+                    <p class="doctor-card-specialty">{{ doctor.specialty }}</p>
+                    <p style="font-size:0.85rem;color:var(--color-text-secondary);">{{ doctor.request_count }} درخواست</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state glass" style="margin-bottom:3rem;">
+            <p>پزشکی به شما اختصاص داده نشده است.</p>
+        </div>
+        {% endif %}
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+            <h2 class="section-title" style="font-size:1.25rem;margin:0;">آخرین درخواست‌ها</h2>
+            <a href="{% url 'dashboard:consultations' %}" class="btn btn-glass btn-sm">مشاهده همه</a>
+        </div>
+
+        {% if recent_requests %}
+        <div class="table-wrapper glass">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>تلفن</th>
+                        <th>پزشک</th>
+                        <th>وضعیت</th>
+                        <th>تاریخ</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in recent_requests %}
+                    <tr>
+                        <td>{{ req.name }}</td>
+                        <td dir="ltr">{{ req.phone }}</td>
+                        <td>{{ req.doctor.name }}</td>
+                        <td><span class="status-badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
+                        <td>{{ req.created_at|date:"Y/m/d H:i" }}</td>
+                        <td><a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">📋</div>
+            <p>درخواستی ثبت نشده است.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

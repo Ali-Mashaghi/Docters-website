@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}مقالات — پلتفرم مشاوره پزشکی{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">مقالات</h1>
+        <p class="section-subtitle">مطالب آموزشی و اطلاعات پزشکی</p>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجو در مقالات</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="عنوان یا موضوع...">
+            </div>
+            <button type="submit" class="btn btn-primary">🔍 جستجو</button>
+        </form>
+
+        {% if articles %}
+        <div class="articles-grid">
+            {% for article in articles %}
+            <article class="article-card glass">
+                {% if article.cover_image %}
+                <a href="{% url 'articles:article_detail' slug=article.slug %}">
+                    <img src="{{ article.cover_image.url }}" alt="{{ article.title }}" class="article-card-image" loading="lazy">
+                </a>
+                {% endif %}
+                <div class="article-card-body">
+                    <time class="article-date" datetime="{{ article.created_at|date:'Y-m-d' }}">{{ article.created_at|date:"Y/m/d" }}</time>
+                    <h2 class="article-card-title">
+                        <a href="{% url 'articles:article_detail' slug=article.slug %}">{{ article.title }}</a>
+                    </h2>
+                    <p class="article-card-excerpt">{{ article.excerpt|truncatewords:25 }}</p>
+                    <a href="{% url 'articles:article_detail' slug=article.slug %}" class="btn btn-glass btn-sm">ادامه مطلب</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">قبلی</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">📰</div>
+            <p>مقاله‌ای یافت نشد.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

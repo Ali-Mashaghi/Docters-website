@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}ایجاد مدیر — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>ایجاد مدیر جدید</h1>
+            <a href="{% url 'dashboard:managers' %}" class="btn btn-glass btn-sm" style="margin-top:0.5rem;">بازگشت به لیست</a>
+        </div>
+
+        <div class="glass-strong form-section" style="max-width:520px;">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                <p class="form-error">{{ error }}</p>
+                {% endfor %}
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-block">ایجاد مدیر</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

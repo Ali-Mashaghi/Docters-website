@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}تخصیص پزشک — {{ manager_user.username }}{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>تخصیص پزشک به مدیر</h1>
+            <p style="color:var(--color-text-secondary);margin-top:0.25rem;">
+                مدیر: <strong dir="ltr">{{ manager_user.username }}</strong>
+                {% if manager_user.get_full_name %} — {{ manager_user.get_full_name }}{% endif %}
+            </p>
+            <a href="{% url 'dashboard:managers' %}" class="btn btn-glass btn-sm" style="margin-top:0.5rem;">بازگشت به لیست</a>
+        </div>
+
+        <div class="glass-strong form-section" style="max-width:640px;">
+            <p style="color:var(--color-text-secondary);margin-bottom:1.5rem;font-size:0.9rem;">
+                پزشکانی که این مدیر می‌تواند درخواست‌های آن‌ها را مشاهده و مدیریت کند را انتخاب کنید.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>{{ form.doctors.label }}</label>
+                    <div class="checkbox-grid">
+                        {% for checkbox in form.doctors %}
+                        <label class="checkbox-item glass">
+                            {{ checkbox.tag }}
+                            <span>{{ checkbox.choice_label }}</span>
+                        </label>
+                        {% empty %}
+                        <p style="color:var(--color-text-secondary);">پزشک فعالی وجود ندارد. ابتدا از Django Admin پزشک اضافه کنید.</p>
+                        {% endfor %}
+                    </div>
+                    {% if form.doctors.errors %}
+                    {% for error in form.doctors.errors %}
+                    <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">ذخیره تخصیص</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

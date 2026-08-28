@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}لیست پزشکان — پلتفرم مشاوره پزشکی{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">لیست پزشکان</h1>
+        <p class="section-subtitle">جستجو و انتخاب پزشک مورد نظر خود</p>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجوی پزشک</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="نام، تخصص یا ...">
+            </div>
+            <div class="filter-group">
+                <label for="specialty">تخصص</label>
+                <select id="specialty" name="specialty" class="glass-input">
+                    <option value="">همه تخصص‌ها</option>
+                    {% for spec in specialties %}
+                    <option value="{{ spec }}" {% if selected_specialty == spec %}selected{% endif %}>{{ spec }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">🔍 جستجو</button>
+        </form>
+
+        {% if doctors %}
+        <div class="doctors-grid">
+            {% for doctor in doctors %}
+            <article class="doctor-card glass">
+                {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="doctor-card-image" loading="lazy">
+                {% endif %}
+                <div class="doctor-card-body">
+                    <h3 class="doctor-card-name">{{ doctor.name }}</h3>
+                    <p class="doctor-card-specialty">{{ doctor.specialty }}</p>
+                    <p class="doctor-card-bio">{{ doctor.bio|truncatewords:25 }}</p>
+                    <a href="{% url 'doctors:doctor_detail' slug=doctor.slug %}" class="btn btn-glass btn-sm">مشاهده پروفایل</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_specialty %}&specialty={{ selected_specialty }}{% endif %}">قبلی</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_specialty %}&specialty={{ selected_specialty }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_specialty %}&specialty={{ selected_specialty }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">🔍</div>
+            <p>پزشکی با این مشخصات یافت نشد.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت مدیران — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>مدیریت مدیران</h1>
+            <p style="color:var(--color-text-secondary);margin-top:0.25rem;">ایجاد مدیر Staff و تخصیص پزشکان</p>
+        </div>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجو</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="نام کاربری، ایمیل...">
+            </div>
+            <button type="submit" class="btn btn-primary">جستجو</button>
+            <a href="{% url 'dashboard:manager_create' %}" class="btn btn-glass">+ مدیر جدید</a>
+        </form>
+
+        {% if managers %}
+        <div class="table-wrapper glass">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>نام کاربری</th>
+                        <th>نام</th>
+                        <th>ایمیل</th>
+                        <th>پزشکان اختصاص‌یافته</th>
+                        <th>تاریخ عضویت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for manager in managers %}
+                    <tr>
+                        <td dir="ltr">{{ manager.username }}</td>
+                        <td>{{ manager.get_full_name|default:"—" }}</td>
+                        <td dir="ltr">{{ manager.email|default:"—" }}</td>
+                        <td>
+                            {% for perm in manager.doctor_permissions.all %}
+                                <span class="status-badge status-contacted" style="margin:0.15rem;">{{ perm.doctor.name }}</span>
+                            {% empty %}
+                                <span style="color:var(--color-text-secondary);">بدون تخصیص</span>
+                            {% endfor %}
+                        </td>
+                        <td>{{ manager.date_joined|date:"Y/m/d" }}</td>
+                        <td style="white-space:nowrap;">
+                            <a href="{% url 'dashboard:manager_assign' pk=manager.pk %}" class="btn btn-glass btn-sm">تخصیص پزشک</a>
+                            <form method="post" action="{% url 'dashboard:manager_delete' pk=manager.pk %}" style="display:inline;" onsubmit="return confirm('آیا از حذف این مدیر مطمئن هستید؟');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-glass btn-sm" style="color:#dc2626;">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">قبلی</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">👤</div>
+            <p>مدیری یافت نشد.</p>
+            <a href="{% url 'dashboard:manager_create' %}" class="btn btn-primary" style="margin-top:1rem;">ایجاد اولین مدیر</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت مقالات — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>مدیریت مقالات</h1>
+            <p style="color:var(--color-text-secondary);margin-top:0.25rem;">ایجاد، ویرایش و انتشار مقالات</p>
+        </div>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجو</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="عنوان، خلاصه...">
+            </div>
+            <div class="filter-group">
+                <label for="status">وضعیت</label>
+                <select id="status" name="status" class="glass-input">
+                    <option value="">همه</option>
+                    <option value="published" {% if selected_status == "published" %}selected{% endif %}>منتشر شده</option>
+                    <option value="draft" {% if selected_status == "draft" %}selected{% endif %}>پیش‌نویس</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">فیلتر</button>
+            <a href="{% url 'dashboard:article_create' %}" class="btn btn-glass">+ مقاله جدید</a>
+        </form>
+
+        {% if articles %}
+        <div class="table-wrapper glass">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>عنوان</th>
+                        <th>نویسنده</th>
+                        <th>وضعیت</th>
+                        <th>تاریخ</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>
+                            <strong>{{ article.title }}</strong>
+                            {% if article.cover_image %}
+                            <br><small style="color:var(--color-text-secondary);">📷 دارای تصویر</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ article.author.get_full_name|default:article.author.username|default:"—" }}</td>
+                        <td>
+                            {% if article.is_published %}
+                            <span class="status-badge status-completed">منتشر شده</span>
+                            {% else %}
+                            <span class="status-badge status-pending">پیش‌نویس</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ article.created_at|date:"Y/m/d" }}</td>
+                        <td style="white-space:nowrap;">
+                            {% if article.is_published %}
+                            <a href="{% url 'articles:article_detail' slug=article.slug %}" class="btn btn-glass btn-sm" target="_blank">مشاهده</a>
+                            {% endif %}
+                            <a href="{% url 'dashboard:article_edit' pk=article.pk %}" class="btn btn-glass btn-sm">ویرایش</a>
+                            <form method="post" action="{% url 'dashboard:article_toggle_publish' pk=article.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-glass btn-sm">
+                                    {% if article.is_published %}لغو انتشار{% else %}انتشار{% endif %}
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'dashboard:article_delete' pk=article.pk %}" style="display:inline;" onsubmit="return confirm('آیا از حذف این مقاله مطمئن هستید؟');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-glass btn-sm" style="color:#dc2626;">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">قبلی</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">📰</div>
+            <p>مقاله‌ای یافت نشد.</p>
+            <a href="{% url 'dashboard:article_create' %}" class="btn btn-primary" style="margin-top:1rem;">ایجاد اولین مقاله</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

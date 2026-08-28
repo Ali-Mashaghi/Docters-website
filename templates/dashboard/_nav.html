@@ -1,0 +1,11 @@
+<nav class="dashboard-nav glass" style="margin-bottom:2rem;padding:0.75rem 1rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">
+    <a href="{% url 'dashboard:home' %}" class="btn btn-glass btn-sm {% if request.resolver_match.url_name == 'home' %}active-nav{% endif %}">داشبورد</a>
+    <a href="{% url 'dashboard:consultations' %}" class="btn btn-glass btn-sm {% if 'consultation' in request.resolver_match.url_name %}active-nav{% endif %}">درخواست‌ها</a>
+    {% if user.is_superuser %}
+    <a href="{% url 'dashboard:articles' %}" class="btn btn-glass btn-sm {% if 'article' in request.resolver_match.url_name %}active-nav{% endif %}">مقالات</a>
+    <a href="{% url 'dashboard:managers' %}" class="btn btn-glass btn-sm {% if 'manager' in request.resolver_match.url_name %}active-nav{% endif %}">مدیریت مدیران</a>
+    <a href="{% url 'dashboard:article_create' %}" class="btn btn-primary btn-sm">+ مقاله</a>
+    <a href="{% url 'dashboard:manager_create' %}" class="btn btn-glass btn-sm">+ مدیر</a>
+    {% endif %}
+    <a href="{% url 'admin:index' %}" class="btn btn-glass btn-sm" style="margin-right:auto;">Django Admin</a>
+</nav>

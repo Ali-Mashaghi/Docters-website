@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}پلتفرم مشاوره پزشکی — پزشک مناسب خود را پیدا کنید{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-float hero-float-1 glass"></div>
+    <div class="hero-float hero-float-2 glass"></div>
+    <div class="container">
+        <div class="hero-content glass-strong">
+            <span class="hero-badge">پلتفرم مشاوره آنلاین</span>
+            <h1>پزشک مناسب خود را پیدا کنید</h1>
+            <p>با بهترین پزشکان متخصص در ارتباط باشید و درخواست مشاوره خود را به‌راحتی ثبت کنید.</p>
+            <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">مشاهده پزشکان</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="doctors">
+    <div class="container">
+        <h2 class="section-title">پزشکان برتر</h2>
+        <p class="section-subtitle">متخصصان مجرب آماده پاسخگویی به شما هستند</p>
+
+        {% if doctors %}
+        <div class="doctors-grid">
+            {% for doctor in doctors %}
+            <article class="doctor-card glass">
+                {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="doctor-card-image" loading="lazy">
+                {% endif %}
+                <div class="doctor-card-body">
+                    <h3 class="doctor-card-name">{{ doctor.name }}</h3>
+                    <p class="doctor-card-specialty">{{ doctor.specialty }}</p>
+                    <p class="doctor-card-bio">{{ doctor.bio|truncatewords:25 }}</p>
+                    <a href="{% url 'doctors:doctor_detail' slug=doctor.slug %}" class="btn btn-glass btn-sm">مشاهده پروفایل</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <div style="text-align:center;margin-top:2.5rem;">
+            <a href="{% url 'doctors:doctor_list' %}" class="btn btn-primary">مشاهده همه پزشکان</a>
+        </div>
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">👨‍⚕️</div>
+            <p>در حال حاضر پزشکی ثبت نشده است.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
