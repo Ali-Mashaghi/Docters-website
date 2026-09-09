@@ -61,7 +61,9 @@
                         <td>{{ article.created_at|date:"Y/m/d" }}</td>
                         <td style="white-space:nowrap;">
                             {% if article.is_published %}
-                            <a href="{% url 'articles:article_detail' slug=article.slug %}" class="btn btn-glass btn-sm" target="_blank">مشاهده</a>
+                            <a href="{% url 'articles:article_detail' slug=article.slug %}" class="btn btn-glass btn-sm" target="_blank">مشاهده در سایت</a>
+                            {% else %}
+                            <span class="status-badge status-pending" title="این مقاله در سایت نمایش داده نمی‌شود">پیش‌نویس — مخفی</span>
                             {% endif %}
                             <a href="{% url 'dashboard:article_edit' pk=article.pk %}" class="btn btn-glass btn-sm">ویرایش</a>
                             <form method="post" action="{% url 'dashboard:article_toggle_publish' pk=article.pk %}" style="display:inline;">

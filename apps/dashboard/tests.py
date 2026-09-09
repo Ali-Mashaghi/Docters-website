@@ -206,7 +206,7 @@ class ArticleDashboardTestCase(TestCase):
         response = self.client.get(reverse("dashboard:articles"))
         self.assertEqual(response.status_code, 403)
 
-    def test_superuser_can_create_article(self):
+    def test_superuser_can_create_published_article(self):
         self.client.login(username="admin", password="testpass123")
         response = self.client.post(
             reverse("dashboard:article_create"),
@@ -215,10 +215,50 @@ class ArticleDashboardTestCase(TestCase):
                 "slug": "test-article",
                 "excerpt": "خلاصه مقاله",
                 "content": "متن کامل مقاله",
-                "is_published": True,
+                "is_published": "on",
             },
         )
         self.assertEqual(response.status_code, 302)
         article = Article.objects.get(slug="test-article")
         self.assertTrue(article.is_published)
         self.assertEqual(article.author, self.superuser)
+
+    def test_create_form_defaults_to_published_checked(self):
+        self.client.login(username="admin", password="testpass123")
+        response = self.client.get(reverse("dashboard:article_create"))
+        self.assertContains(response, "checked", html=False)
+
+    def test_draft_article_not_on_public_list(self):
+        Article.objects.create(
+            title="پیش‌نویس",
+            slug="draft-article",
+            excerpt="خلاصه",
+            content="متن",
+            is_published=False,
+        )
+        response = self.client.get(reverse("articles:article_list"))
+        self.assertNotContains(response, "پیش‌نویس")
+
+    def test_published_article_on_public_list(self):
+        Article.objects.create(
+            title="منتشر شده",
+            slug="published-article",
+            excerpt="خلاصه",
+            content="متن",
+            is_published=True,
+        )
+        response = self.client.get(reverse("articles:article_list"))
+        self.assertContains(response, "منتشر شده")
+
+    def test_persian_slug_url_resolves(self):
+        Article.objects.create(
+            title="غذای بد",
+            slug="غذای-بد",
+            excerpt="خلاصه",
+            content="متن",
+            is_published=True,
+        )
+        url = reverse("articles:article_detail", kwargs={"slug": "غذای-بد"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "غذای بد")

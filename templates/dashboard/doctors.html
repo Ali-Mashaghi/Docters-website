@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت پزشکان — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>مدیریت پزشکان</h1>
+            <p style="color:var(--color-text-secondary);margin-top:0.25rem;">افزودن، ویرایش و مدیریت پروفایل پزشکان</p>
+        </div>
+
+        <form method="get" class="filters-bar glass">
+            <div class="filter-group">
+                <label for="search">جستجو</label>
+                <input type="text" id="search" name="q" value="{{ search_query }}" class="glass-input" placeholder="نام، تخصص...">
+            </div>
+            <div class="filter-group">
+                <label for="status">وضعیت</label>
+                <select id="status" name="status" class="glass-input">
+                    <option value="">همه</option>
+                    <option value="active" {% if selected_status == "active" %}selected{% endif %}>فعال</option>
+                    <option value="inactive" {% if selected_status == "inactive" %}selected{% endif %}>غیرفعال</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">فیلتر</button>
+            <a href="{% url 'dashboard:doctor_create' %}" class="btn btn-glass">+ پزشک جدید</a>
+        </form>
+
+        {% if doctors %}
+        <div class="doctors-grid" style="margin-bottom:2rem;">
+            {% for doctor in doctors %}
+            <article class="doctor-card glass">
+                {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="{{ doctor.name }}" class="doctor-card-image" loading="lazy">
+                {% endif %}
+                <div class="doctor-card-body">
+                    <h3 class="doctor-card-name">{{ doctor.name }}</h3>
+                    <p class="doctor-card-specialty">{{ doctor.specialty }}</p>
+                    {% if doctor.is_active %}
+                    <span class="status-badge status-completed">فعال</span>
+                    {% else %}
+                    <span class="status-badge status-cancelled">غیرفعال</span>
+                    {% endif %}
+                    <p style="font-size:0.85rem;color:var(--color-text-secondary);margin:0.75rem 0;">
+                        {{ doctor.portfolios.count }} نمونه‌کار
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.35rem;">
+                        <a href="{% url 'doctors:doctor_detail' slug=doctor.slug %}" class="btn btn-glass btn-sm" target="_blank">مشاهده</a>
+                        <a href="{% url 'dashboard:doctor_edit' pk=doctor.pk %}" class="btn btn-glass btn-sm">ویرایش</a>
+                        <form method="post" action="{% url 'dashboard:doctor_toggle_active' pk=doctor.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-glass btn-sm">
+                                {% if doctor.is_active %}غیرفعال{% else %}فعال{% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'dashboard:doctor_delete' pk=doctor.pk %}" style="display:inline;" onsubmit="return confirm('حذف این پزشک و تمام نمونه‌کارها؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-glass btn-sm" style="color:#dc2626;">حذف</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">قبلی</a>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="current">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">بعدی</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state glass">
+            <div class="empty-state-icon">👨‍⚕️</div>
+            <p>پزشکی یافت نشد.</p>
+            <a href="{% url 'dashboard:doctor_create' %}" class="btn btn-primary" style="margin-top:1rem;">افزودن اولین پزشک</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

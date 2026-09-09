@@ -10,10 +10,16 @@ from .views import (
     ConsultationListView,
     ConsultationStatusUpdateView,
     DashboardView,
+    DoctorCreateView,
+    DoctorDeleteView,
+    DoctorListView,
+    DoctorToggleActiveView,
+    DoctorUpdateView,
     ManagerAssignView,
     ManagerCreateView,
     ManagerDeleteView,
     ManagerListView,
+    PortfolioDeleteView,
 )
 
 app_name = "dashboard"
@@ -63,5 +69,19 @@ urlpatterns = [
         "articles/<int:pk>/toggle-publish/",
         ArticleTogglePublishView.as_view(),
         name="article_toggle_publish",
+    ),
+    path("doctors/", DoctorListView.as_view(), name="doctors"),
+    path("doctors/create/", DoctorCreateView.as_view(), name="doctor_create"),
+    path("doctors/<int:pk>/edit/", DoctorUpdateView.as_view(), name="doctor_edit"),
+    path("doctors/<int:pk>/delete/", DoctorDeleteView.as_view(), name="doctor_delete"),
+    path(
+        "doctors/<int:pk>/toggle-active/",
+        DoctorToggleActiveView.as_view(),
+        name="doctor_toggle_active",
+    ),
+    path(
+        "doctors/<int:doctor_pk>/portfolios/<int:pk>/delete/",
+        PortfolioDeleteView.as_view(),
+        name="portfolio_delete",
     ),
 ]

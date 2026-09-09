@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }} — پنل مدیریت{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="dashboard-header">
+            <h1>{{ form_title }}</h1>
+            <a href="{% url 'dashboard:doctors' %}" class="btn btn-glass btn-sm" style="margin-top:0.5rem;">بازگشت به لیست</a>
+        </div>
+
+        <div class="glass-strong form-section" style="max-width:720px;margin-bottom:2rem;">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group">
+                    {% if field.field.widget.input_type == "checkbox" %}
+                    <label class="checkbox-inline">
+                        {{ field }}
+                        <span>{{ field.label }}</span>
+                    </label>
+                    {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% endif %}
+                    {% if field.name == "profile_image" and object and object.profile_image %}
+                    <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--color-text-secondary);">
+                        تصویر فعلی:
+                        <img src="{{ object.profile_image.url }}" alt="" style="max-height:80px;border-radius:8px;display:block;margin-top:0.5rem;">
+                    </p>
+                    {% endif %}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                    {% if field.name == "slug" %}
+                    <p style="font-size:0.8rem;color:var(--color-text-secondary);margin-top:0.35rem;">در صورت خالی بودن، از نام ساخته می‌شود.</p>
+                    {% endif %}
+                    {% if field.name == "is_active" %}
+                    <p style="font-size:0.8rem;color:var(--color-text-secondary);margin-top:0.35rem;">پزشکان غیرفعال در سایت نمایش داده نمی‌شوند.</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">ذخیره پزشک</button>
+            </form>
+        </div>
+
+        {% if object %}
+        <div class="glass-strong form-section" style="max-width:720px;">
+            <h2 style="font-size:1.1rem;margin-bottom:1rem;">نمونه‌کارها</h2>
+
+            {% if portfolios %}
+            <div class="portfolio-grid" style="margin-bottom:1.5rem;">
+                {% for item in portfolios %}
+                <div class="portfolio-item glass">
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy">
+                    <div class="portfolio-item-info">
+                        <p class="portfolio-item-title">{{ item.title }}</p>
+                        <form method="post" action="{% url 'dashboard:portfolio_delete' doctor_pk=object.pk pk=item.pk %}" onsubmit="return confirm('حذف این نمونه‌کار؟');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-glass btn-sm" style="color:#dc2626;margin-top:0.5rem;">حذف</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--color-text-secondary);margin-bottom:1rem;font-size:0.9rem;">هنوز نمونه‌کاری ثبت نشده است.</p>
+            {% endif %}
+
+            <h3 style="font-size:1rem;margin-bottom:1rem;">افزودن نمونه‌کار</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="add_portfolio" value="1">
+                {% for field in portfolio_form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    {% for error in field.errors %}
+                    <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-glass">افزودن نمونه‌کار</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

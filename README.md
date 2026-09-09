@@ -139,4 +139,6 @@ python manage.py test
 | `/doctors/` | لیست پزشکان |
 | `/doctors/<slug>/` | پروفایل + فرم مشاوره |
 | `/dashboard/` | پنل مدیریت |
-| `/admin/` | Django Admin |
+| `/dashboard/doctors/` | مدیریت پزشکان (Superuser) |
+| `/dashboard/articles/` | مدیریت مقالات (Superuser) |
+| `/dashboard/managers/` | مدیریت مدیران (Superuser) |

@@ -24,7 +24,7 @@ class Article(models.Model):
         related_name="articles",
         verbose_name="نویسنده",
     )
-    is_published = models.BooleanField(default=False, verbose_name="منتشر شده")
+    is_published = models.BooleanField(default=True, verbose_name="منتشر شده")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="آخرین ویرایش")
 

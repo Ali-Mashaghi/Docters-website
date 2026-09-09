@@ -7,5 +7,5 @@ app_name = "doctors"
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("doctors/", DoctorListView.as_view(), name="doctor_list"),
-    path("doctors/<slug:slug>/", DoctorDetailView.as_view(), name="doctor_detail"),
+    path("doctors/<str:slug>/", DoctorDetailView.as_view(), name="doctor_detail"),
 ]

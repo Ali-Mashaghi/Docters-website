@@ -31,7 +31,7 @@
                             <span>{{ checkbox.choice_label }}</span>
                         </label>
                         {% empty %}
-                        <p style="color:var(--color-text-secondary);">پزشک فعالی وجود ندارد. ابتدا از Django Admin پزشک اضافه کنید.</p>
+                        <p style="color:var(--color-text-secondary);">پزشک فعالی وجود ندارد. ابتدا از بخش <a href="{% url 'dashboard:doctor_create' %}">مدیریت پزشکان</a> پزشک اضافه کنید.</p>
                         {% endfor %}
                     </div>
                     {% if form.doctors.errors %}

@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 
 from apps.articles.models import Article
-from apps.doctors.models import Doctor
+from apps.doctors.models import Doctor, Portfolio
 
 
 class StaffUserCreateForm(forms.ModelForm):
@@ -140,6 +140,8 @@ class ArticleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
+        if not self.instance.pk:
+            self.fields["is_published"].initial = True
 
     def clean_slug(self):
         slug = self.cleaned_data.get("slug", "").strip()
@@ -156,3 +158,107 @@ class ArticleForm(forms.ModelForm):
             raise ValidationError("این اسلاگ قبلاً استفاده شده است.")
 
         return slug
+
+
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = (
+            "name",
+            "slug",
+            "specialty",
+            "bio",
+            "profile_image",
+            "phone",
+            "is_active",
+        )
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"class": "glass-input", "placeholder": "نام پزشک"}
+            ),
+            "slug": forms.TextInput(
+                attrs={
+                    "class": "glass-input",
+                    "placeholder": "خالی بگذارید تا خودکار ساخته شود",
+                    "dir": "ltr",
+                }
+            ),
+            "specialty": forms.TextInput(
+                attrs={"class": "glass-input", "placeholder": "تخصص"}
+            ),
+            "bio": forms.Textarea(
+                attrs={
+                    "class": "glass-input glass-textarea",
+                    "rows": 6,
+                    "placeholder": "معرفی و سوابق پزشک",
+                }
+            ),
+            "profile_image": forms.ClearableFileInput(
+                attrs={"class": "glass-input"}
+            ),
+            "phone": forms.TextInput(
+                attrs={
+                    "class": "glass-input",
+                    "placeholder": "09123456789",
+                    "dir": "ltr",
+                }
+            ),
+            "is_active": forms.CheckboxInput(attrs={"class": "checkbox-input"}),
+        }
+        labels = {
+            "name": "نام",
+            "slug": "اسلاگ",
+            "specialty": "تخصص",
+            "bio": "معرفی",
+            "profile_image": "تصویر پروفایل",
+            "phone": "تلفن",
+            "is_active": "فعال",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+        if self.instance.pk:
+            self.fields["profile_image"].required = False
+        if not self.instance.pk:
+            self.fields["is_active"].initial = True
+
+    def clean_slug(self):
+        slug = self.cleaned_data.get("slug", "").strip()
+        name = self.cleaned_data.get("name", "")
+        if not slug:
+            slug = slugify(name, allow_unicode=True)
+        if not slug:
+            raise ValidationError("اسلاگ معتبر نیست.")
+
+        qs = Doctor.objects.filter(slug=slug)
+        if self.instance.pk:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise ValidationError("این اسلاگ قبلاً استفاده شده است.")
+
+        return slug
+
+
+class PortfolioForm(forms.ModelForm):
+    class Meta:
+        model = Portfolio
+        fields = ("title", "description", "image")
+        widgets = {
+            "title": forms.TextInput(
+                attrs={"class": "glass-input", "placeholder": "عنوان نمونه‌کار"}
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "glass-input glass-textarea",
+                    "rows": 2,
+                    "placeholder": "توضیحات (اختیاری)",
+                }
+            ),
+            "image": forms.ClearableFileInput(attrs={"class": "glass-input"}),
+        }
+        labels = {
+            "title": "عنوان",
+            "description": "توضیحات",
+            "image": "تصویر",
+        }

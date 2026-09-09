@@ -29,7 +29,6 @@ CSRF_TRUSTED_ORIGINS = [
 SERVE_MEDIA = os.getenv("SERVE_MEDIA", "False").lower() in ("true", "1", "yes")
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

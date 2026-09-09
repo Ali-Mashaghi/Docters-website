@@ -9,9 +9,15 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 
 from apps.articles.models import Article
 from apps.consultations.models import ConsultationRequest
-from apps.doctors.models import DoctorManager
+from apps.doctors.models import Doctor, DoctorManager, Portfolio
 
-from .forms import ArticleForm, DoctorAssignmentForm, StaffUserCreateForm
+from .forms import (
+    ArticleForm,
+    DoctorAssignmentForm,
+    DoctorForm,
+    PortfolioForm,
+    StaffUserCreateForm,
+)
 from .permissions import (
     get_accessible_consultations,
     get_accessible_doctors,
@@ -315,8 +321,20 @@ class ArticleCreateView(SuperuserRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, "مقاله با موفقیت ایجاد شد.")
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        article = form.instance
+        if article.is_published:
+            messages.success(
+                self.request,
+                f"مقاله «{article.title}» منتشر شد و در سایت قابل مشاهده است.",
+            )
+        else:
+            messages.warning(
+                self.request,
+                f"مقاله «{article.title}» به‌صورت پیش‌نویس ذخیره شد. "
+                "برای نمایش در سایت، گزینه «منتشر شده» را فعال کنید.",
+            )
+        return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -357,3 +375,114 @@ class ArticleTogglePublishView(SuperuserRequiredMixin, View):
         status = "منتشر" if article.is_published else "پیش‌نویس"
         messages.success(request, f"وضعیت مقاله به «{status}» تغییر کرد.")
         return redirect("dashboard:articles")
+
+
+class DoctorListView(SuperuserRequiredMixin, ListView):
+    model = Doctor
+    template_name = "dashboard/doctors.html"
+    context_object_name = "doctors"
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = Doctor.objects.prefetch_related("portfolios").order_by("-created_at")
+
+        search = self.request.GET.get("q", "").strip()
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search)
+                | Q(specialty__icontains=search)
+                | Q(bio__icontains=search)
+            )
+
+        status = self.request.GET.get("status", "").strip()
+        if status == "active":
+            queryset = queryset.filter(is_active=True)
+        elif status == "inactive":
+            queryset = queryset.filter(is_active=False)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_query"] = self.request.GET.get("q", "")
+        context["selected_status"] = self.request.GET.get("status", "")
+        return context
+
+
+class DoctorCreateView(SuperuserRequiredMixin, CreateView):
+    model = Doctor
+    form_class = DoctorForm
+    template_name = "dashboard/doctor_form.html"
+    success_url = reverse_lazy("dashboard:doctors")
+
+    def form_valid(self, form):
+        messages.success(self.request, f"پزشک «{form.instance.name}» ایجاد شد.")
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = "افزودن پزشک جدید"
+        return context
+
+
+class DoctorUpdateView(SuperuserRequiredMixin, UpdateView):
+    model = Doctor
+    form_class = DoctorForm
+    template_name = "dashboard/doctor_form.html"
+    success_url = reverse_lazy("dashboard:doctors")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = "ویرایش پزشک"
+        context["portfolios"] = self.object.portfolios.all()
+        context["portfolio_form"] = PortfolioForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if "add_portfolio" in request.POST:
+            portfolio_form = PortfolioForm(request.POST, request.FILES)
+            if portfolio_form.is_valid():
+                portfolio = portfolio_form.save(commit=False)
+                portfolio.doctor = self.object
+                portfolio.save()
+                messages.success(request, "نمونه‌کار اضافه شد.")
+                return redirect("dashboard:doctor_edit", pk=self.object.pk)
+            context = self.get_context_data(
+                form=DoctorForm(request.POST, request.FILES, instance=self.object),
+                portfolio_form=portfolio_form,
+            )
+            return self.render_to_response(context)
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, f"پزشک «{form.instance.name}» ویرایش شد.")
+        return super().form_valid(form)
+
+
+class DoctorDeleteView(SuperuserRequiredMixin, View):
+    def post(self, request, pk):
+        doctor = get_object_or_404(Doctor, pk=pk)
+        name = doctor.name
+        doctor.delete()
+        messages.success(request, f"پزشک «{name}» حذف شد.")
+        return redirect("dashboard:doctors")
+
+
+class DoctorToggleActiveView(SuperuserRequiredMixin, View):
+    def post(self, request, pk):
+        doctor = get_object_or_404(Doctor, pk=pk)
+        doctor.is_active = not doctor.is_active
+        doctor.save(update_fields=["is_active"])
+        status = "فعال" if doctor.is_active else "غیرفعال"
+        messages.success(request, f"وضعیت پزشک به «{status}» تغییر کرد.")
+        return redirect("dashboard:doctors")
+
+
+class PortfolioDeleteView(SuperuserRequiredMixin, View):
+    def post(self, request, doctor_pk, pk):
+        doctor = get_object_or_404(Doctor, pk=doctor_pk)
+        portfolio = get_object_or_404(Portfolio, pk=pk, doctor=doctor)
+        portfolio.delete()
+        messages.success(request, "نمونه‌کار حذف شد.")
+        return redirect("dashboard:doctor_edit", pk=doctor.pk)
