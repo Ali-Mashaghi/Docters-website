@@ -21,10 +21,68 @@
                 <span class="detail-label">تلفن</span>
                 <span class="detail-value" dir="ltr">{{ consultation.phone }}</span>
             </div>
-            {% if consultation.email %}
             <div class="detail-row">
-                <span class="detail-label">ایمیل</span>
-                <span class="detail-value" dir="ltr">{{ consultation.email }}</span>
+                <span class="detail-label">تاریخ تولد</span>
+                <span class="detail-value">{{ consultation.birth_date }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">شغل</span>
+                <span class="detail-value">{{ consultation.job }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">وضعیت تاهل</span>
+                <span class="detail-value">{{ consultation.get_marital_status_display }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">آدرس</span>
+                <span class="detail-value">{{ consultation.address }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">سابقه پزشکی</span>
+                <span class="detail-value">{{ consultation.medical_history }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">سابقه عمل جراحی</span>
+                <span class="detail-value">{{ consultation.get_surgery_history_display }}</span>
+            </div>
+            {% if consultation.surgery_details %}
+            <div class="detail-row">
+                <span class="detail-label">نوع عمل جراحی</span>
+                <span class="detail-value">{{ consultation.surgery_details }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="detail-label">تبخال</span>
+                <span class="detail-value">{{ consultation.get_cold_sore_display }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">سابقه دارویی</span>
+                <span class="detail-value">{{ consultation.medication_history }}</span>
+            </div>
+            {% if consultation.other_medications %}
+            <div class="detail-row">
+                <span class="detail-label">داروهای دیگر</span>
+                <span class="detail-value">{{ consultation.other_medications }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="detail-label">مصرف دخانیات و مواد</span>
+                <span class="detail-value">{{ consultation.substance_use }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">نحوه آشنایی</span>
+                <span class="detail-value">{{ consultation.get_referral_source_display }}</span>
+            </div>
+            {% if consultation.patient_image %}
+            <div class="detail-row">
+                <span class="detail-label">عکس</span>
+                <span class="detail-value"><a href="{{ consultation.patient_image.url }}" target="_blank" rel="noopener">مشاهده عکس</a></span>
+            </div>
+            {% endif %}
+            {% if consultation.admin_notes %}
+            <div class="detail-row" style="flex-direction:column;gap:0.5rem;">
+                <span class="detail-label">یادداشت مدیر</span>
+                <span class="detail-value" style="font-weight:400;line-height:1.8;">{{ consultation.admin_notes }}</span>
             </div>
             {% endif %}
             <div class="detail-row">
@@ -62,6 +120,51 @@
                 <button type="submit" class="btn btn-primary">ذخیره وضعیت</button>
             </form>
         </div>
+
+        <div class="glass form-section admin-record-form">
+            <h3 style="margin-bottom:0.5rem;font-size:1rem;">تکمیل پرونده</h3>
+            <p class="section-subtitle" style="text-align:right;margin-bottom:1.25rem;">
+                یادداشت داخلی و حداکثر چهار عکس به این پرونده اضافه کنید.
+            </p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ record_form.admin_notes.id_for_label }}">یادداشت مدیر</label>
+                    {{ record_form.admin_notes }}
+                    {% for error in record_form.admin_notes.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                </div>
+                <div class="admin-image-grid">
+                    {% for field in record_form %}
+                    {% if field.name != 'admin_notes' %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% if field.value %}
+                        <a href="{{ field.value.url }}" target="_blank" rel="noopener" class="existing-image-link">مشاهده عکس فعلی</a>
+                        {% endif %}
+                        {{ field }}
+                        <img class="admin-image-preview" data-preview-for="{{ field.id_for_label }}" alt="پیش‌نمایش عکس" hidden>
+                        {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary">ذخیره پرونده</button>
+            </form>
+        </div>
     </div>
 </section>
+<script>
+    document.querySelectorAll('.admin-image-grid input[type="file"]').forEach(function (input) {
+        input.addEventListener('change', function () {
+            const preview = document.querySelector('[data-preview-for="' + input.id + '"]');
+            const file = input.files && input.files[0];
+            if (!preview || !file) {
+                if (preview) preview.hidden = true;
+                return;
+            }
+            preview.src = URL.createObjectURL(file);
+            preview.hidden = false;
+        });
+    });
+</script>
 {% endblock %}

@@ -13,7 +13,7 @@
                 <h1>{{ doctor.name }}</h1>
                 <span class="doctor-specialty-badge">{{ doctor.specialty }}</span>
                 <p class="doctor-bio-text">{{ doctor.bio|truncatewords:40 }}</p>
-                <a href="#consultation-form" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
+                <a href="{% url 'doctors:doctor_consultation' slug=doctor.slug %}" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
             </div>
         </div>
     </div>
@@ -56,35 +56,4 @@
 </section>
 {% endif %}
 
-<section class="section" id="consultation-form">
-    <div class="container">
-        <h2 class="section-title">درخواست مشاوره</h2>
-        <p class="section-subtitle">فرم زیر را تکمیل کنید تا با شما تماس بگیریم</p>
-
-        <div class="glass-strong form-section">
-            {% if success %}
-            <div class="alert alert-success">
-                <strong>درخواست شما با موفقیت ثبت شد.</strong><br>
-                کارشناسان با شما تماس خواهند گرفت.
-            </div>
-            {% else %}
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                    {% for error in field.errors %}
-                    <p class="form-error">{{ error }}</p>
-                    {% endfor %}
-                    {% endif %}
-                </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary btn-block">ارسال درخواست</button>
-            </form>
-            {% endif %}
-        </div>
-    </div>
-</section>
 {% endblock %}

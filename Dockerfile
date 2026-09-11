@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev gcc \
+    && apt-get install -y --no-install-recommends libpq-dev gcc nginx \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -16,10 +16,12 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+
 RUN sed -i 's/\r$//' docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 RUN mkdir -p /app/staticfiles /app/media
 
-EXPOSE 8000
+EXPOSE 80
 
 ENTRYPOINT ["docker/entrypoint.sh"]

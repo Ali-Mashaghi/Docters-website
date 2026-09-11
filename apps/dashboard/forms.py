@@ -5,7 +5,29 @@ from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 
 from apps.articles.models import Article
+from apps.consultations.models import ConsultationRequest
 from apps.doctors.models import Doctor, Portfolio
+
+
+class ConsultationRecordForm(forms.ModelForm):
+    class Meta:
+        model = ConsultationRequest
+        fields = (
+            "admin_notes",
+            "admin_image_1",
+            "admin_image_2",
+            "admin_image_3",
+            "admin_image_4",
+        )
+        widgets = {
+            "admin_notes": forms.Textarea(
+                attrs={
+                    "class": "glass-input glass-textarea",
+                    "rows": 5,
+                    "placeholder": "یادداشت یا جزئیات تکمیلی پرونده را بنویسید...",
+                }
+            ),
+        }
 
 
 class StaffUserCreateForm(forms.ModelForm):
@@ -161,6 +183,18 @@ class ArticleForm(forms.ModelForm):
 
 
 class DoctorForm(forms.ModelForm):
+    SPECIALTY_CHOICES = (
+        ("جراح رینوپلاستی", "جراح رینوپلاستی"),
+        ("دندان پزشکی", "دندان پزشکی"),
+        ("سایر", "سایر"),
+    )
+
+    specialty = forms.ChoiceField(
+        choices=SPECIALTY_CHOICES,
+        label="تخصص",
+        widget=forms.Select(attrs={"class": "glass-input"}),
+    )
+
     class Meta:
         model = Doctor
         fields = (

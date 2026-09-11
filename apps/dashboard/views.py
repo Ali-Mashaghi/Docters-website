@@ -13,6 +13,7 @@ from apps.doctors.models import Doctor, DoctorManager, Portfolio
 
 from .forms import (
     ArticleForm,
+    ConsultationRecordForm,
     DoctorAssignmentForm,
     DoctorForm,
     PortfolioForm,
@@ -85,7 +86,8 @@ class ConsultationListView(DashboardMixin, ListView):
             queryset = queryset.filter(
                 Q(name__icontains=search)
                 | Q(phone__icontains=search)
-                | Q(email__icontains=search)
+                | Q(job__icontains=search)
+                | Q(address__icontains=search)
                 | Q(doctor__name__icontains=search)
             )
 
@@ -124,7 +126,23 @@ class ConsultationDetailView(DashboardMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["status_choices"] = ConsultationRequest.STATUS_CHOICES
+        context.setdefault("record_form", ConsultationRecordForm(instance=self.object))
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = ConsultationRecordForm(
+            request.POST,
+            request.FILES,
+            instance=self.object,
+        )
+        if form.is_valid():
+            form.save()
+            messages.success(request, "جزئیات پرونده با موفقیت ذخیره شد.")
+            return redirect("dashboard:consultation_detail", pk=self.object.pk)
+
+        context = self.get_context_data(record_form=form)
+        return self.render_to_response(context)
 
 
 class ConsultationStatusUpdateView(DashboardMixin, View):

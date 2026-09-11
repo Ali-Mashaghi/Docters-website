@@ -546,8 +546,156 @@ main {
 /* Forms */
 .form-section {
     padding: 2rem;
-    max-width: 600px;
+    max-width: 820px;
     margin: 0 auto;
+}
+
+.consultation-form {
+    max-width: 820px;
+}
+
+.form-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 2rem 0 1.25rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--glass-border);
+    animation: form-heading-in 0.55s ease both;
+}
+
+@keyframes form-heading-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.consultation-field.choice-field {
+    padding: 1rem;
+    border: 1px solid rgba(8, 145, 178, 0.16);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(255,255,255,0.48), rgba(20,184,166,0.08));
+    box-shadow: 0 8px 24px rgba(8, 145, 178, 0.06);
+    animation: field-card-in 0.5s ease both;
+}
+
+@keyframes field-card-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.consultation-field.choice-field li {
+    transition: transform var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.consultation-field.choice-field li:hover {
+    transform: translateY(-2px);
+    border-color: rgba(8, 145, 178, 0.45);
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.form-section-heading:first-child {
+    margin-top: 0;
+}
+
+.form-section-number {
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+}
+
+.form-section-heading h3 {
+    font-size: 1.05rem;
+    color: var(--color-navy);
+}
+
+.form-section-heading p {
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    margin-top: 0.15rem;
+}
+
+[data-theme="dark"] .form-section-heading h3 {
+    color: var(--color-text);
+}
+
+.form-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1rem;
+}
+
+.consultation-field-wide {
+    grid-column: 1 / -1;
+}
+
+.consultation-field input[type="radio"],
+.consultation-field input[type="checkbox"] {
+    accent-color: var(--color-primary);
+}
+
+.consultation-field ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    padding: 0;
+}
+
+.consultation-field li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 0.85rem;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+}
+
+.consultation-field li label {
+    margin: 0;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.upload-box {
+    min-height: 125px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-sm);
+    background: rgba(8, 145, 178, 0.06);
+    cursor: pointer;
+    text-align: center;
+}
+
+.upload-box small {
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
+.upload-icon {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: white;
+    background: var(--color-primary);
+    font-size: 1.3rem;
+}
+
+.file-input {
+    display: none;
 }
 
 .form-group {
@@ -581,6 +729,93 @@ main {
     box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.15);
 }
 
+.date-picker-wrapper {
+    position: relative;
+}
+
+.date-picker-wrapper .glass-input {
+    padding-left: 2.75rem;
+    cursor: pointer;
+}
+
+.date-picker-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    width: 1.15rem;
+    height: 1.05rem;
+    transform: translateY(-50%);
+    color: var(--color-primary);
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.date-picker-icon::before {
+    content: "";
+    position: absolute;
+    top: 0.2rem;
+    left: 0;
+    right: 0;
+    border-top: 2px solid currentColor;
+}
+
+.date-picker-icon::after {
+    content: "";
+    position: absolute;
+    top: -0.28rem;
+    left: 0.18rem;
+    width: 0.18rem;
+    height: 0.35rem;
+    border-left: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+}
+
+.form-help {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+}
+
+.admin-record-form {
+    max-width: 820px;
+}
+
+.admin-image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1rem;
+}
+
+.admin-image-grid input[type="file"] {
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px dashed var(--color-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    background: rgba(8, 145, 178, 0.05);
+}
+
+.existing-image-link {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+    font-size: 0.8rem;
+}
+
+.admin-image-preview {
+    display: block;
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    margin-top: 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid rgba(8, 145, 178, 0.25);
+    box-shadow: var(--glass-shadow);
+    animation: field-card-in 0.35s ease both;
+}
+
 .glass-textarea {
     resize: vertical;
     min-height: 100px;
@@ -590,6 +825,18 @@ main {
     color: #ef4444;
     font-size: 0.8rem;
     margin-top: 0.35rem;
+}
+
+@media (max-width: 640px) {
+    .form-section {
+        padding: 1.25rem;
+    }
+
+    .form-fields-grid,
+    .consultation-field ul,
+    .admin-image-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .alert {

@@ -1,0 +1,21 @@
+<div class="form-group consultation-field {% if wide %}consultation-field-wide{% endif %} {% if field.name == 'medical_history' or field.name == 'medication_history' or field.name == 'substance_use' %}choice-field{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {% if field.name == 'patient_image' %}
+    <label class="upload-box" for="{{ field.id_for_label }}">
+        <span class="upload-icon">↑</span>
+        <strong>انتخاب عکس</strong>
+        <small>فرمت‌های JPG، PNG یا WEBP تا حجم ۵ مگابایت</small>
+        {{ field }}
+    </label>
+    {% elif field.name == 'birth_date' %}
+    <div class="date-picker-wrapper">
+        {{ field }}
+        <span class="date-picker-icon" aria-hidden="true"></span>
+    </div>
+    <small class="form-help">برای انتخاب تاریخ، روی فیلد کلیک کنید.</small>
+    {% else %}
+    {{ field }}
+    {% endif %}
+    {% if field.help_text %}<small class="form-help">{{ field.help_text }}</small>{% endif %}
+    {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+</div>
