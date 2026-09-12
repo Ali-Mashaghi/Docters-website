@@ -3,7 +3,7 @@
 {% block title %}{{ doctor.name }} — {{ doctor.specialty }}{% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="section doctor-detail-intro">
     <div class="container">
         <div class="glass-strong doctor-profile-header">
             {% if doctor.profile_image %}
@@ -19,7 +19,7 @@
     </div>
 </section>
 
-<section class="section">
+<section class="section doctor-detail-about">
     <div class="container">
         <h2 class="section-title">درباره پزشک</h2>
         <div class="glass detail-card">

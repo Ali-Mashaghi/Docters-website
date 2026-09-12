@@ -1323,6 +1323,14 @@ main {
 
 /* Mobile nav */
 @media (max-width: 768px) {
+    .doctor-detail-intro {
+        padding-bottom: 1.5rem;
+    }
+
+    .doctor-detail-about {
+        padding-top: 1.5rem;
+    }
+
     .hamburger {
         display: flex;
     }
