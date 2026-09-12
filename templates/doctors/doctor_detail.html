@@ -13,7 +13,6 @@
                 <h1>{{ doctor.name }}</h1>
                 <span class="doctor-specialty-badge">{{ doctor.specialty }}</span>
                 <p class="doctor-bio-text">{{ doctor.bio|truncatewords:40 }}</p>
-                <a href="{% url 'doctors:doctor_consultation' slug=doctor.slug %}" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
             </div>
         </div>
     </div>
@@ -31,6 +30,7 @@
             </div>
             {% endif %}
         </div>
+        <a href="{% url 'doctors:doctor_consultation' slug=doctor.slug %}" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
     </div>
 </section>
 
