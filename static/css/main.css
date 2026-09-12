@@ -508,6 +508,11 @@ main {
     line-height: 1.8;
 }
 
+.consultation-action {
+    margin-top: 1rem;
+    text-align: center;
+}
+
 /* Portfolio gallery */
 .portfolio-grid {
     display: grid;

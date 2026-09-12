@@ -30,7 +30,9 @@
             </div>
             {% endif %}
         </div>
-        <a href="{% url 'doctors:doctor_consultation' slug=doctor.slug %}" class="btn btn-primary" style="margin-top:1rem;">درخواست مشاوره</a>
+        <div class="consultation-action">
+            <a href="{% url 'doctors:doctor_consultation' slug=doctor.slug %}" class="btn btn-primary">درخواست مشاوره</a>
+        </div>
     </div>
 </section>
 
