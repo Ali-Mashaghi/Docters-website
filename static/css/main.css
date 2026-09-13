@@ -777,23 +777,23 @@ main {
 }
 
 jdp-container {
-    --jdp-primary: #0f9f9a;
-    --jdp-color-1: #e6f7f5;
-    --jdp-color-2: #c6ebe7;
-    --jdp-color-3: #78cfc8;
-    --jdp-color-4: #458f8a;
+    --jdp-primary: #10b9a8;
+    --jdp-color-1: #e9faf8;
+    --jdp-color-2: #c8eee9;
+    --jdp-color-3: #83d9d0;
+    --jdp-color-4: #438f89;
 }
 
 jdp-container .jdp-days-header {
-    color: #087f7a;
+    color: #078d82;
 }
 
 jdp-container .jdp-day:not(.disabled-day):hover {
-    background: #b4e3df;
+    background: #b7e9e3;
 }
 
 jdp-container .jdp-day.today {
-    border-color: #0f9f9a;
+    border-color: #10b9a8;
 }
 
 .form-help {
