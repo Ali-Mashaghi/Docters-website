@@ -776,6 +776,26 @@ main {
     border-right: 2px solid currentColor;
 }
 
+jdp-container {
+    --jdp-primary: #0f9f9a;
+    --jdp-color-1: #e6f7f5;
+    --jdp-color-2: #c6ebe7;
+    --jdp-color-3: #78cfc8;
+    --jdp-color-4: #458f8a;
+}
+
+jdp-container .jdp-days-header {
+    color: #087f7a;
+}
+
+jdp-container .jdp-day:not(.disabled-day):hover {
+    background: #b4e3df;
+}
+
+jdp-container .jdp-day.today {
+    border-color: #0f9f9a;
+}
+
 .form-help {
     display: block;
     margin-top: 0.35rem;
@@ -833,6 +853,18 @@ main {
 }
 
 @media (max-width: 640px) {
+    .section:has(.doctor-profile-header) {
+        padding-bottom: 0.5rem;
+    }
+
+    .consultation-form-section {
+        padding-top: 0.5rem;
+    }
+
+    .consultation-form-section .section-subtitle {
+        margin-bottom: 1rem;
+    }
+
     .form-section {
         padding: 1.25rem;
     }
