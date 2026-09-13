@@ -32,7 +32,7 @@ MEDICATION_HISTORY_CHOICES = (
 SUBSTANCE_USE_CHOICES = (
     ("cigarette", "سیگار"),
     ("hookah", "قلیان"),
-    ("opioids", "تریاک و مخدرات"),
+    ("opioids", "مواد مخدر (گل، تریاک، قرص‌های روانگردان و...)"),
     ("alcohol", "مشروب"),
     ("none", "هیچکدام"),
     ("all", "همه موارد"),
@@ -138,7 +138,7 @@ class ConsultationRequestForm(forms.ModelForm):
             "address": forms.Textarea(
                 attrs={
                     "class": "glass-input glass-textarea",
-                    "placeholder": "آدرس کامل",
+                    "placeholder": "آدرس",
                     "rows": 3,
                 }
             ),
