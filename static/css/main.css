@@ -837,6 +837,11 @@ main {
         padding: 1.25rem;
     }
 
+    .datepicker-container:not(.pwt-mobile-view) .datepicker-plot-area {
+        width: min(200px, calc(100vw - 2rem));
+        min-width: 0;
+    }
+
     .form-fields-grid,
     .consultation-field ul,
     .admin-image-grid {

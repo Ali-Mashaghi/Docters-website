@@ -132,6 +132,7 @@ celerybeat.pid
 
 # Environments
 .env
+docker-compose.dev.yml
 .venv
 env/
 venv/
