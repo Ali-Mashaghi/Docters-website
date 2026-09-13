@@ -126,6 +126,7 @@ class ConsultationRequestForm(forms.ModelForm):
                     "class": "glass-input",
                     "placeholder": "۱۴۰۰/۰۱/۰۱",
                     "autocomplete": "off",
+                    "data-jdp": "",
                 }
             ),
             "job": forms.TextInput(
