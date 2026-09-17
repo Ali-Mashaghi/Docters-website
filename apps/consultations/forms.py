@@ -102,9 +102,9 @@ class ConsultationRequestForm(forms.ModelForm):
             "medication_history",
             "other_medications",
             "substance_use",
-            "referral_source",
             "patient_image",
             "full_face_image",
+            "referral_source",
             "message",
         )
         widgets = {
