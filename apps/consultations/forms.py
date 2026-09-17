@@ -104,6 +104,7 @@ class ConsultationRequestForm(forms.ModelForm):
             "substance_use",
             "patient_image",
             "full_face_image",
+            "front_face_image",
             "referral_source",
             "message",
         )
@@ -163,6 +164,12 @@ class ConsultationRequestForm(forms.ModelForm):
                     "accept": "image/jpeg,image/png,image/webp",
                 }
             ),
+            "front_face_image": forms.ClearableFileInput(
+                attrs={
+                    "class": "file-input",
+                    "accept": "image/jpeg,image/png,image/webp",
+                }
+            ),
         }
         labels = {
             "name": "نام و نام خانوادگی",
@@ -179,8 +186,9 @@ class ConsultationRequestForm(forms.ModelForm):
             "other_medications": "داروهای دیگر",
             "substance_use": "آیا دخانیات یا مواد مصرف می‌کنید؟",
             "referral_source": "نحوه آشنایی با ما",
-            "patient_image": "عکس مد نظر شما",
-            "full_face_image": "عکس تمام رخ شما",
+            "patient_image": "عکس فرم بینی مد نظر شما",
+            "full_face_image": "عکس نیم رخ شما",
+            "front_face_image": "عکس تمام رخ شما",
             "message": "پیام",
         }
 

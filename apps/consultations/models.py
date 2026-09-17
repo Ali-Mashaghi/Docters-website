@@ -79,6 +79,12 @@ class ConsultationRequest(models.Model):
     full_face_image = models.ImageField(
         upload_to="consultations/",
         blank=True,
+        verbose_name="عکس نیم رخ شما",
+        validators=[validate_image_size, validate_image_extension],
+    )
+    front_face_image = models.ImageField(
+        upload_to="consultations/",
+        blank=True,
         verbose_name="عکس تمام رخ شما",
         validators=[validate_image_size, validate_image_extension],
     )
