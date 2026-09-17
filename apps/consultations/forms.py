@@ -187,8 +187,8 @@ class ConsultationRequestForm(forms.ModelForm):
             "substance_use": "آیا دخانیات یا مواد مصرف می‌کنید؟",
             "referral_source": "نحوه آشنایی با ما",
             "patient_image": "عکس فرم بینی مد نظر شما",
-            "full_face_image": "عکس نیم رخ شما",
-            "front_face_image": "عکس تمام رخ شما",
+            "full_face_image": "عکس نیم رخ خودتون",
+            "front_face_image": "عکس تمام رخ خودتون",
             "message": "پیام",
         }
 
