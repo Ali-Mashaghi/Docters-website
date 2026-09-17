@@ -242,7 +242,7 @@ class PermissionTestCase(TestCase):
     def test_doctor_form_uses_specialty_choices(self):
         form = DoctorForm()
         specialty_values = [value for value, label in form.fields["specialty"].choices]
-        self.assertIn("جراح رینوپلاستی", specialty_values)
+        self.assertIn("جراح فک و صورت", specialty_values)
         self.assertIn("دندان پزشکی", specialty_values)
 
     def test_birth_date_has_no_minimum_year_restriction(self):

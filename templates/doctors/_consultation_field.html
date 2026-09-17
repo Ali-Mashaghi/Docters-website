@@ -1,6 +1,6 @@
 <div class="form-group consultation-field {% if wide %}consultation-field-wide{% endif %} {% if field.name == 'medical_history' or field.name == 'medication_history' or field.name == 'substance_use' %}choice-field{% endif %}">
     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-    {% if field.name == 'patient_image' %}
+    {% if field.name == 'patient_image' or field.name == 'full_face_image' %}
     <label class="upload-box" for="{{ field.id_for_label }}">
         <span class="upload-icon">↑</span>
         <strong>انتخاب عکس</strong>

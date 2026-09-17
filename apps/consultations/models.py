@@ -76,6 +76,12 @@ class ConsultationRequest(models.Model):
         verbose_name="عکس",
         validators=[validate_image_size, validate_image_extension],
     )
+    full_face_image = models.ImageField(
+        upload_to="consultations/",
+        blank=True,
+        verbose_name="عکس تمام رخ شما",
+        validators=[validate_image_size, validate_image_extension],
+    )
     admin_notes = models.TextField(blank=True, verbose_name="یادداشت مدیر")
     admin_image_1 = models.ImageField(
         upload_to="consultations/admin/",

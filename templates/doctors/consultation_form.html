@@ -25,7 +25,6 @@
                     <div class="doctor-profile-info">
                         <h1>{{ doctor.name }}</h1>
                         <span class="doctor-specialty-badge">{{ doctor.specialty }}</span>
-                        <p class="doctor-bio-text">برای درخواست مشاوره، اطلاعات خود را وارد کنید.</p>
                     </div>
                 </div>
             </div>
@@ -33,8 +32,7 @@
 
         <section class="section consultation-form-section">
             <div class="container">
-                <h2 class="section-title">درخواست مشاوره</h2>
-                <p class="section-subtitle">فرم زیر را تکمیل کنید تا با شما تماس بگیریم</p>
+                <h2 class="section-title">فرم مشاوره</h2>
 
                 <div class="glass-strong form-section">
                     {% if success %}
@@ -79,10 +77,10 @@
 
                         <div class="form-section-heading">
                             <span class="form-section-number">۴</span>
-                            <div><h3>عکس نمونه و ایده‌آل شما</h3><p>یک عکس و نحوه آشنایی خود را وارد کنید</p></div>
+                            <div><h3>عکس‌ها</h3></div>
                         </div>
                         {% for field in form %}
-                        {% if field.name == 'referral_source' or field.name == 'patient_image' or field.name == 'message' %}
+                        {% if field.name == 'patient_image' or field.name == 'full_face_image' or field.name == 'referral_source' or field.name == 'message' %}
                         {% include "doctors/_consultation_field.html" with field=field wide=True %}
                         {% endif %}
                         {% endfor %}

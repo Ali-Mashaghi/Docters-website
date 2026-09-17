@@ -184,7 +184,7 @@ class ArticleForm(forms.ModelForm):
 
 class DoctorForm(forms.ModelForm):
     SPECIALTY_CHOICES = (
-        ("جراح رینوپلاستی", "جراح رینوپلاستی"),
+        ("جراح فک و صورت", "جراح فک و صورت"),
         ("دندان پزشکی", "دندان پزشکی"),
         ("سایر", "سایر"),
     )

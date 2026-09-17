@@ -104,6 +104,7 @@ class ConsultationRequestForm(forms.ModelForm):
             "substance_use",
             "referral_source",
             "patient_image",
+            "full_face_image",
             "message",
         )
         widgets = {
@@ -156,14 +157,20 @@ class ConsultationRequestForm(forms.ModelForm):
                     "accept": "image/jpeg,image/png,image/webp",
                 }
             ),
+            "full_face_image": forms.ClearableFileInput(
+                attrs={
+                    "class": "file-input",
+                    "accept": "image/jpeg,image/png,image/webp",
+                }
+            ),
         }
         labels = {
-            "name": "نام",
+            "name": "نام و نام خانوادگی",
             "phone": "شماره تماس",
             "birth_date": "تاریخ تولد",
             "job": "شغل",
             "marital_status": "وضعیت تاهل",
-            "address": "آدرس",
+            "address": "آدرس به اختصار",
             "medical_history": "سابقه پزشکی",
             "surgery_history": "آیا سابقه عمل جراحی داشته‌اید؟",
             "surgery_details": "چه نوع جراحی انجام داده‌اید؟",
@@ -172,7 +179,8 @@ class ConsultationRequestForm(forms.ModelForm):
             "other_medications": "داروهای دیگر",
             "substance_use": "آیا دخانیات یا مواد مصرف می‌کنید؟",
             "referral_source": "نحوه آشنایی با ما",
-            "patient_image": "آپلود عکس",
+            "patient_image": "عکس مد نظر شما",
+            "full_face_image": "عکس تمام رخ شما",
             "message": "پیام",
         }
 

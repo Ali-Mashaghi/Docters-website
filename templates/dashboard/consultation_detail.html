@@ -75,8 +75,14 @@
             </div>
             {% if consultation.patient_image %}
             <div class="detail-row">
-                <span class="detail-label">عکس</span>
+                <span class="detail-label">عکس مد نظر شما</span>
                 <span class="detail-value"><a href="{{ consultation.patient_image.url }}" target="_blank" rel="noopener">مشاهده عکس</a></span>
+            </div>
+            {% endif %}
+            {% if consultation.full_face_image %}
+            <div class="detail-row">
+                <span class="detail-label">عکس تمام رخ شما</span>
+                <span class="detail-value"><a href="{{ consultation.full_face_image.url }}" target="_blank" rel="noopener">مشاهده عکس</a></span>
             </div>
             {% endif %}
             {% if consultation.admin_notes %}
