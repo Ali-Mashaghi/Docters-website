@@ -78,6 +78,7 @@
                 <span class="detail-label">عکس فرم بینی مد نظر شما</span>
                 <span class="detail-value detail-image-value">
                     <img src="{{ consultation.patient_image.url }}" alt="عکس فرم بینی مد نظر شما" class="detail-image-preview">
+                    <a href="{{ consultation.patient_image.url }}" download class="btn btn-glass btn-sm detail-image-download">دانلود عکس</a>
                 </span>
             </div>
             {% endif %}
@@ -86,6 +87,7 @@
                 <span class="detail-label">عکس نیم رخ شما</span>
                 <span class="detail-value detail-image-value">
                     <img src="{{ consultation.full_face_image.url }}" alt="عکس نیم رخ شما" class="detail-image-preview">
+                    <a href="{{ consultation.full_face_image.url }}" download class="btn btn-glass btn-sm detail-image-download">دانلود عکس</a>
                 </span>
             </div>
             {% endif %}
@@ -94,6 +96,7 @@
                 <span class="detail-label">عکس تمام رخ شما</span>
                 <span class="detail-value detail-image-value">
                     <img src="{{ consultation.front_face_image.url }}" alt="عکس تمام رخ شما" class="detail-image-preview">
+                    <a href="{{ consultation.front_face_image.url }}" download class="btn btn-glass btn-sm detail-image-download">دانلود عکس</a>
                 </span>
             </div>
             {% endif %}
@@ -216,6 +219,39 @@
             if (currentWrap) {
                 currentWrap.style.display = 'none';
             }
+        });
+    });
+
+    document.querySelectorAll('.consultation-image-remove').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.removePreview);
+            const previewWrap = document.querySelector('[data-preview-wrap-for="' + button.dataset.removePreview + '"]');
+
+            if (input) {
+                input.value = '';
+            }
+            if (previewWrap) {
+                previewWrap.hidden = true;
+            }
+        });
+    });
+
+    document.querySelectorAll('.consultation-form input[type="file"]').forEach(function (input) {
+        input.addEventListener('change', function () {
+            const previewWrap = document.querySelector('[data-preview-wrap-for="' + input.id + '"]');
+            const preview = document.querySelector('[data-preview-for="' + input.id + '"]');
+            const file = input.files && input.files[0];
+
+            if (!previewWrap || !preview) {
+                return;
+            }
+            if (!file) {
+                previewWrap.hidden = true;
+                preview.removeAttribute('src');
+                return;
+            }
+            preview.src = URL.createObjectURL(file);
+            previewWrap.hidden = false;
         });
     });
 </script>

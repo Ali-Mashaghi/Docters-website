@@ -895,6 +895,9 @@ label[for$="_clear"],
 .detail-image-value {
     width: 100%;
     display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     justify-content: flex-start;
 }
 
@@ -910,6 +913,45 @@ label[for$="_clear"],
 
 .image-detail-row {
     align-items: flex-start;
+}
+
+.detail-image-download {
+    align-self: flex-end;
+    white-space: nowrap;
+}
+
+.consultation-image-preview-wrap {
+    position: relative;
+    width: min(100%, 260px);
+    margin-top: 0.75rem;
+    border: 1px solid rgba(8, 145, 178, 0.35);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: rgba(8, 145, 178, 0.04);
+    box-shadow: var(--glass-shadow);
+}
+
+.consultation-image-preview {
+    display: block;
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+}
+
+.consultation-image-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
 }
 
 .glass-textarea {

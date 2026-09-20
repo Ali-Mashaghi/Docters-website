@@ -7,6 +7,10 @@
         <small>فرمت‌های JPG، PNG یا WEBP تا حجم ۵ مگابایت</small>
         {{ field }}
     </label>
+    <div class="consultation-image-preview-wrap" data-preview-wrap-for="{{ field.id_for_label }}" hidden>
+        <button type="button" class="consultation-image-remove" data-remove-preview="{{ field.id_for_label }}" aria-label="حذف عکس">×</button>
+        <img class="consultation-image-preview" data-preview-for="{{ field.id_for_label }}" alt="پیش‌نمایش {{ field.label }}">
+    </div>
     {% elif field.name == 'birth_date' %}
     <div class="date-picker-wrapper">
         {{ field }}

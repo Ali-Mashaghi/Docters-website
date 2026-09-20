@@ -156,6 +156,39 @@
                 persianDigits: true,
             });
         }
+
+        document.querySelectorAll('.consultation-image-remove').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const input = document.getElementById(button.dataset.removePreview);
+                const previewWrap = document.querySelector('[data-preview-wrap-for="' + button.dataset.removePreview + '"]');
+
+                if (input) {
+                    input.value = '';
+                }
+                if (previewWrap) {
+                    previewWrap.hidden = true;
+                }
+            });
+        });
+
+        document.querySelectorAll('.consultation-form input[type="file"]').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const previewWrap = document.querySelector('[data-preview-wrap-for="' + input.id + '"]');
+                const preview = document.querySelector('[data-preview-for="' + input.id + '"]');
+                const file = input.files && input.files[0];
+
+                if (!previewWrap || !preview) {
+                    return;
+                }
+                if (!file) {
+                    previewWrap.hidden = true;
+                    preview.removeAttribute('src');
+                    return;
+                }
+                preview.src = URL.createObjectURL(file);
+                previewWrap.hidden = false;
+            });
+        });
     });
 </script>
 </html>

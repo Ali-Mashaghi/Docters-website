@@ -142,6 +142,18 @@ class PermissionTestCase(TestCase):
         self.assertContains(response, "عکس فرم بینی مد نظر شما")
         self.assertContains(response, "عکس نیم رخ شما")
         self.assertContains(response, "عکس تمام رخ شما")
+        self.assertContains(response, 'class="btn btn-glass btn-sm detail-image-download"', count=3)
+
+    def test_consultation_form_has_interactive_image_previews(self):
+        response = self.client.get(
+            reverse(
+                "doctors:doctor_consultation",
+                kwargs={"slug": self.doctor_a.slug},
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'class="consultation-image-preview-wrap"', count=3)
+        self.assertContains(response, 'class="consultation-image-remove"', count=3)
 
     def test_superuser_can_access_all(self):
         self.client.login(username="admin", password="testpass123")
