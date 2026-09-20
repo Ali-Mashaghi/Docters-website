@@ -1,0 +1,24 @@
+<div class="admin-image-card">
+    {% if widget.value.url %}
+        <div class="admin-image-preview-wrap">
+            <button type="button" class="admin-image-remove" data-clear-field="{{ widget.name }}" aria-label="حذف تصویر">×</button>
+            <img src="{{ widget.value.url }}" alt="{{ widget.name }}" class="admin-image-preview" />
+        </div>
+    {% else %}
+        <div class="admin-image-placeholder">
+            <span>انتخاب عکس</span>
+        </div>
+    {% endif %}
+
+    <div class="admin-image-upload-control">
+        <input type="file" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+        {% if widget.value.url %}
+            <label class="admin-image-choose-label" for="{{ widget.attrs.id }}">تغییر عکس</label>
+        {% endif %}
+    </div>
+
+    {% if widget.value.url %}
+        <input type="checkbox" name="{{ widget.name }}_clear" id="{{ widget.name }}_clear" class="admin-image-clear-checkbox" />
+        <label for="{{ widget.name }}_clear" class="admin-image-clear-label">حذف عکس</label>
+    {% endif %}
+</div>

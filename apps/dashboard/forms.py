@@ -27,6 +27,18 @@ class ConsultationRecordForm(forms.ModelForm):
                     "placeholder": "یادداشت یا جزئیات تکمیلی پرونده را بنویسید...",
                 }
             ),
+            "admin_image_1": forms.ClearableFileInput(
+                attrs={"accept": "image/jpeg,image/png,image/webp"}
+            ),
+            "admin_image_2": forms.ClearableFileInput(
+                attrs={"accept": "image/jpeg,image/png,image/webp"}
+            ),
+            "admin_image_3": forms.ClearableFileInput(
+                attrs={"accept": "image/jpeg,image/png,image/webp"}
+            ),
+            "admin_image_4": forms.ClearableFileInput(
+                attrs={"accept": "image/jpeg,image/png,image/webp"}
+            ),
         }
 
 

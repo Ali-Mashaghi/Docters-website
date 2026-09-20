@@ -113,6 +113,36 @@ class PermissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_dashboard_detail_displays_all_three_uploaded_patient_images(self):
+        self.client.login(username="staff_a", password="testpass123")
+        url = reverse(
+            "dashboard:consultation_detail",
+            kwargs={"pk": self.request_a.pk},
+        )
+
+        self.request_a.patient_image = SimpleUploadedFile(
+            "patient.png",
+            MINIMAL_PNG,
+            content_type="image/png",
+        )
+        self.request_a.full_face_image = SimpleUploadedFile(
+            "full-face.png",
+            MINIMAL_PNG,
+            content_type="image/png",
+        )
+        self.request_a.front_face_image = SimpleUploadedFile(
+            "front-face.png",
+            MINIMAL_PNG,
+            content_type="image/png",
+        )
+        self.request_a.save()
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "عکس فرم بینی مد نظر شما")
+        self.assertContains(response, "عکس نیم رخ شما")
+        self.assertContains(response, "عکس تمام رخ شما")
+
     def test_superuser_can_access_all(self):
         self.client.login(username="admin", password="testpass123")
         url = reverse(

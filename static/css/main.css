@@ -813,6 +813,17 @@ jdp-container .jdp-day.today {
     gap: 0 1rem;
 }
 
+.admin-image-field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-image-upload-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
 .admin-image-grid input[type="file"] {
     width: 100%;
     padding: 0.65rem;
@@ -822,23 +833,83 @@ jdp-container .jdp-day.today {
     background: rgba(8, 145, 178, 0.05);
 }
 
-.existing-image-link {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    color: var(--color-primary);
-    font-size: 0.8rem;
+.admin-image-current-wrap,
+.admin-image-preview-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 260px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid rgba(8, 145, 178, 0.35);
+    box-shadow: var(--glass-shadow);
+    background: rgba(8, 145, 178, 0.04);
 }
 
+.admin-image-current-preview,
 .admin-image-preview {
     display: block;
     width: 100%;
     max-height: 180px;
     object-fit: cover;
-    margin-top: 0.75rem;
     border-radius: var(--radius-sm);
-    border: 2px solid rgba(8, 145, 178, 0.25);
+}
+
+.admin-image-remove,
+.admin-image-current-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.admin-image-placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 120px;
+    border: 1px dashed rgba(8, 145, 178, 0.4);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    background: rgba(8, 145, 178, 0.04);
+    font-size: 0.82rem;
+}
+
+input[name$="_clear"],
+label[for$="_clear"],
+.admin-image-clear-label,
+.admin-image-choose-label {
+    display: none;
+}
+
+.detail-image-value {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.detail-image-preview {
+    display: block;
+    width: min(100%, 260px);
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(8, 145, 178, 0.25);
     box-shadow: var(--glass-shadow);
-    animation: field-card-in 0.35s ease both;
+}
+
+.image-detail-row {
+    align-items: flex-start;
 }
 
 .glass-textarea {
