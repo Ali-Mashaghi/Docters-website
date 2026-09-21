@@ -177,6 +177,20 @@ class ConsultationStatusUpdateView(DashboardMixin, View):
         return redirect("dashboard:consultations")
 
 
+class ConsultationDeleteView(DashboardMixin, View):
+    """Delete a consultation only when it is within the user's scope."""
+
+    def post(self, request, pk):
+        consultation = get_object_or_404(
+            self.get_consultations_queryset(),
+            pk=pk,
+        )
+        name = consultation.name
+        consultation.delete()
+        messages.success(request, f"پرونده «{name}» حذف شد.")
+        return redirect("dashboard:consultations")
+
+
 class ManagerListView(SuperuserRequiredMixin, ListView):
     template_name = "dashboard/managers.html"
     context_object_name = "managers"

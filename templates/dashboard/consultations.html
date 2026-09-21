@@ -59,7 +59,13 @@
                         <td>{{ req.doctor.name }}</td>
                         <td><span class="status-badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
                         <td>{{ req.created_at|date:"Y/m/d H:i" }}</td>
-                        <td><a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a></td>
+                        <td>
+                            <a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a>
+                            <form method="post" action="{% url 'dashboard:consultation_delete' pk=req.pk %}" style="display:inline;" onsubmit="return confirm('آیا از حذف این پرونده مطمئن هستید؟');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
