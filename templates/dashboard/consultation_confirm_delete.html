@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}تأیید حذف پرونده{% endblock %}
+
+{% block content %}
+<section class="dashboard-layout">
+    <div class="container">
+        {% include "dashboard/_nav.html" %}
+
+        <div class="glass form-section" style="max-width:620px;margin:0 auto;text-align:center;">
+            <h1 style="font-size:1.4rem;margin-bottom:1rem;">تأیید حذف پرونده</h1>
+            <p style="line-height:1.8;margin-bottom:1.5rem;">
+                آیا از حذف پرونده «{{ consultation.name }}» مطمئن هستید؟
+                این عملیات قابل بازگشت نیست.
+            </p>
+            <div style="display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;">
+                <form method="post" action="{% url 'dashboard:consultation_delete' pk=consultation.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">تأیید حذف</button>
+                </form>
+                <a href="{{ cancel_url }}" class="btn btn-glass">منصرف شدن</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
