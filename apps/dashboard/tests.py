@@ -178,6 +178,22 @@ class PermissionTestCase(TestCase):
             ConsultationRequest.objects.filter(pk=self.request_a.pk).exists()
         )
 
+    def test_delete_requires_confirmation_page(self):
+        self.client.login(username="staff_a", password="testpass123")
+        url = reverse(
+            "dashboard:consultation_delete",
+            kwargs={"pk": self.request_a.pk},
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "تأیید حذف")
+        self.assertContains(response, "منصرف شدن")
+        self.assertTrue(
+            ConsultationRequest.objects.filter(pk=self.request_a.pk).exists()
+        )
+
     def test_staff_cannot_delete_other_doctors_consultation(self):
         self.client.login(username="staff_a", password="testpass123")
         url = reverse(
