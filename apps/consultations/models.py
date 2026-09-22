@@ -61,7 +61,7 @@ class ConsultationRequest(models.Model):
         ("genioplasty", "جراحی چانه (ژنیوپلاستی)"),
         ("blepharoplasty", "جراحی پلک (بلفاروپلاستی)"),
         ("endoscopic_temporal_lift", "لیفت شقیقه (اندوسکوپیک)"),
-        ("endoscopic_forehead_lift", "لیفت پیشانی اندوسکوپیک"),
+        ("endoscopic_forehead_lift", "لیفت پیشانی (اندوسکوپیک)"),
         ("facelift", "لیفت صورت"),
         ("buccal_fat_removal", "تخلیه چربی گونه (باکال فت)"),
         ("buccal_fat_removal_deep", "تخلیه چربی غبغب"),
