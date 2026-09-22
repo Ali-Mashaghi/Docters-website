@@ -3,8 +3,8 @@
     {% if field.name == 'patient_image' or field.name == 'front_face_image' %}
     <label class="upload-box" for="{{ field.id_for_label }}">
         <span class="upload-icon">↑</span>
-        <strong>انتخاب عکس</strong>
-        <small>فرمت‌های JPG، PNG یا WEBP تا حجم ۵ مگابایت</small>
+        <strong data-upload-label-for="{{ field.id_for_label }}">انتخاب عکس</strong>
+        <small>فرمت‌های JPG، PNG یا WEBP تا حجم ۵۰ مگابایت</small>
         {{ field }}
     </label>
     <div class="consultation-image-preview-wrap" data-preview-wrap-for="{{ field.id_for_label }}" hidden>
