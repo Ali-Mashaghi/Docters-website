@@ -315,6 +315,16 @@ main {
     box-shadow: 0 8px 25px rgba(8, 145, 178, 0.4);
 }
 
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
 .btn-glass {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--blur));

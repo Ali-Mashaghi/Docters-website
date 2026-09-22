@@ -9,7 +9,10 @@
 
         <div class="dashboard-header">
             <h1>جزئیات درخواست مشاوره</h1>
-            <a href="{% url 'dashboard:consultations' %}" class="btn btn-glass btn-sm" style="margin-top:0.5rem;">بازگشت به لیست</a>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+                <a href="{% url 'dashboard:consultations' %}" class="btn btn-glass btn-sm">بازگشت به لیست</a>
+                <a href="{% url 'dashboard:consultation_delete' pk=consultation.pk %}?from=detail" class="btn btn-danger btn-sm">حذف پرونده</a>
+            </div>
         </div>
 
         <div class="glass detail-card">

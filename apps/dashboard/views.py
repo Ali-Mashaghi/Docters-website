@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, UpdateView, View
 
 from apps.articles.models import Article
@@ -191,6 +191,44 @@ class ConsultationStatusUpdateView(DashboardMixin, View):
         if detail_url in referer:
             return redirect("dashboard:consultation_detail", pk=pk)
         return redirect("dashboard:consultations")
+
+
+class ConsultationDeleteView(DashboardMixin, View):
+    """Delete a consultation only when it is within the user's scope."""
+
+    template_name = "dashboard/consultation_confirm_delete.html"
+
+    def get_consultation(self, pk):
+        return get_object_or_404(
+            self.get_consultations_queryset(),
+            pk=pk,
+        )
+
+    def get(self, request, pk):
+        consultation = self.get_consultation(pk)
+        cancel_url = reverse("dashboard:consultations")
+        if request.GET.get("from") == "detail":
+            cancel_url = reverse(
+                "dashboard:consultation_detail",
+                kwargs={"pk": consultation.pk},
+            )
+        return self.render_confirmation(request, consultation, cancel_url)
+
+    def post(self, request, pk):
+        consultation = self.get_consultation(pk)
+        name = consultation.name
+        consultation.delete()
+        messages.success(request, f"پرونده «{name}» حذف شد.")
+        return redirect("dashboard:consultations")
+
+    def render_confirmation(self, request, consultation, cancel_url):
+        from django.shortcuts import render
+
+        return render(
+            request,
+            self.template_name,
+            {"consultation": consultation, "cancel_url": cancel_url},
+        )
 
 
 class ManagerListView(SuperuserRequiredMixin, ListView):

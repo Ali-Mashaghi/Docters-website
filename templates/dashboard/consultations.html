@@ -59,7 +59,10 @@
                         <td>{{ req.doctor.name }}</td>
                         <td><span class="status-badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
                         <td>{{ req.created_at|date:"Y/m/d H:i" }}</td>
-                        <td><a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a></td>
+                        <td>
+                            <a href="{% url 'dashboard:consultation_detail' pk=req.pk %}" class="btn btn-glass btn-sm">جزئیات</a>
+                            <a href="{% url 'dashboard:consultation_delete' pk=req.pk %}" class="btn btn-danger btn-sm">حذف</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
