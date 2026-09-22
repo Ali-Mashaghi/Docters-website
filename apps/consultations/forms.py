@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from .models import ConsultationRequest
 
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-MAX_IMAGE_SIZE = 5 * 1024 * 1024
+MAX_IMAGE_SIZE = 50 * 1024 * 1024
 
 MEDICAL_HISTORY_CHOICES = (
     ("heart", "بیماری قلبی"),
@@ -103,7 +103,6 @@ class ConsultationRequestForm(forms.ModelForm):
             "other_medications",
             "substance_use",
             "patient_image",
-            "full_face_image",
             "front_face_image",
             "referral_source",
             "message",
@@ -158,12 +157,6 @@ class ConsultationRequestForm(forms.ModelForm):
                     "accept": "image/jpeg,image/png,image/webp",
                 }
             ),
-            "full_face_image": forms.ClearableFileInput(
-                attrs={
-                    "class": "file-input",
-                    "accept": "image/jpeg,image/png,image/webp",
-                }
-            ),
             "front_face_image": forms.ClearableFileInput(
                 attrs={
                     "class": "file-input",
@@ -187,7 +180,6 @@ class ConsultationRequestForm(forms.ModelForm):
             "substance_use": "آیا دخانیات یا مواد مصرف می‌کنید؟",
             "referral_source": "نحوه آشنایی با ما",
             "patient_image": "عکس فرم بینی مد نظر شما",
-            "full_face_image": "عکس نیم رخ خودتون",
             "front_face_image": "عکس تمام رخ خودتون",
             "message": "پیام",
         }

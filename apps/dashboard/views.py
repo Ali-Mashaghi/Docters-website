@@ -13,6 +13,7 @@ from apps.doctors.models import Doctor, DoctorManager, Portfolio
 
 from .forms import (
     ArticleForm,
+    ConsultationEditForm,
     ConsultationRecordForm,
     DoctorAssignmentForm,
     DoctorForm,
@@ -127,10 +128,25 @@ class ConsultationDetailView(DashboardMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["status_choices"] = ConsultationRequest.STATUS_CHOICES
         context.setdefault("record_form", ConsultationRecordForm(instance=self.object))
+        context.setdefault("consultation_form", ConsultationEditForm(instance=self.object))
         return context
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        if request.POST.get("edit_consultation"):
+            form = ConsultationEditForm(
+                request.POST,
+                request.FILES,
+                instance=self.object,
+            )
+            if form.is_valid():
+                form.save()
+                messages.success(request, "اجزای پرونده با موفقیت تغییر کرد.")
+                return redirect("dashboard:consultation_detail", pk=self.object.pk)
+
+            context = self.get_context_data(consultation_form=form)
+            return self.render_to_response(context)
+
         form = ConsultationRecordForm(
             request.POST,
             request.FILES,

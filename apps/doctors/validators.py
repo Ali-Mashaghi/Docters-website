@@ -3,12 +3,12 @@ from pathlib import Path
 
 from django.core.exceptions import ValidationError
 
-MAX_IMAGE_SIZE = 5 * 1024 * 1024
+MAX_IMAGE_SIZE = 50 * 1024 * 1024
 
 
 def validate_image_size(value):
     if value.size > MAX_IMAGE_SIZE:
-        raise ValidationError("حجم فایل نباید بیشتر از ۵ مگابایت باشد.")
+        raise ValidationError("حجم فایل نباید بیشتر از ۵۰ مگابایت باشد.")
 
 
 def validate_image_extension(value):

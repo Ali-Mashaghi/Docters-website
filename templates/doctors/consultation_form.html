@@ -80,7 +80,7 @@
                             <div><h3>عکس‌ها</h3></div>
                         </div>
                         {% for field in form %}
-                        {% if field.name == 'patient_image' or field.name == 'full_face_image' or field.name == 'front_face_image' or field.name == 'referral_source' or field.name == 'message' %}
+                        {% if field.name == 'patient_image' or field.name == 'front_face_image' or field.name == 'referral_source' or field.name == 'message' %}
                         {% include "doctors/_consultation_field.html" with field=field wide=True %}
                         {% endif %}
                         {% endfor %}

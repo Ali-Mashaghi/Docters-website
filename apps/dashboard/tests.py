@@ -113,7 +113,7 @@ class PermissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_dashboard_detail_displays_all_three_uploaded_patient_images(self):
+    def test_dashboard_detail_displays_remaining_uploaded_patient_images(self):
         self.client.login(username="staff_a", password="testpass123")
         url = reverse(
             "dashboard:consultation_detail",
@@ -140,9 +140,8 @@ class PermissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "عکس فرم بینی مد نظر شما")
-        self.assertContains(response, "عکس نیم رخ شما")
         self.assertContains(response, "عکس تمام رخ شما")
-        self.assertContains(response, 'class="btn btn-glass btn-sm detail-image-download"', count=3)
+        self.assertContains(response, 'class="btn btn-glass btn-sm detail-image-download"', count=2)
 
     def test_consultation_form_has_interactive_image_previews(self):
         response = self.client.get(
@@ -152,8 +151,42 @@ class PermissionTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'class="consultation-image-preview-wrap"', count=3)
-        self.assertContains(response, 'class="consultation-image-remove"', count=3)
+        self.assertContains(response, 'class="consultation-image-preview-wrap"', count=2)
+        self.assertContains(response, 'class="consultation-image-remove"', count=2)
+
+    def test_staff_can_edit_consultation_components(self):
+        self.client.login(username="staff_a", password="testpass123")
+        url = reverse(
+            "dashboard:consultation_detail",
+            kwargs={"pk": self.request_a.pk},
+        )
+        response = self.client.post(
+            url,
+            {
+                "edit_consultation": "1",
+                "name": "کاربر ویرایش‌شده",
+                "phone": "09123334444",
+                "birth_date": "1371/02/03",
+                "job": "مدیر",
+                "marital_status": "married",
+                "address": "اصفهان",
+                "medical_history": "آلرژی",
+                "surgery_history": "no",
+                "surgery_details": "نباید بماند",
+                "cold_sore": "no",
+                "medication_history": "ویتامین",
+                "other_medications": "",
+                "substance_use": "هیچکدام",
+                "referral_source": "google",
+                "message": "پیام جدید",
+            },
+        )
+
+        self.assertRedirects(response, url)
+        self.request_a.refresh_from_db()
+        self.assertEqual(self.request_a.name, "کاربر ویرایش‌شده")
+        self.assertEqual(self.request_a.address, "اصفهان")
+        self.assertEqual(self.request_a.surgery_details, "")
 
     def test_superuser_can_access_all(self):
         self.client.login(username="admin", password="testpass123")

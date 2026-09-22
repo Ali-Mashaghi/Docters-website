@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -40,6 +42,72 @@ class ConsultationRecordForm(forms.ModelForm):
                 attrs={"accept": "image/jpeg,image/png,image/webp"}
             ),
         }
+
+
+class ConsultationEditForm(forms.ModelForm):
+    class Meta:
+        model = ConsultationRequest
+        fields = (
+            "name",
+            "phone",
+            "birth_date",
+            "job",
+            "marital_status",
+            "address",
+            "medical_history",
+            "surgery_history",
+            "surgery_details",
+            "cold_sore",
+            "medication_history",
+            "other_medications",
+            "substance_use",
+            "patient_image",
+            "front_face_image",
+            "referral_source",
+            "message",
+        )
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "glass-input"}),
+            "phone": forms.TextInput(attrs={"class": "glass-input", "dir": "ltr"}),
+            "birth_date": forms.TextInput(attrs={"class": "glass-input", "dir": "ltr"}),
+            "job": forms.TextInput(attrs={"class": "glass-input"}),
+            "marital_status": forms.Select(attrs={"class": "glass-input"}),
+            "address": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
+            "medical_history": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
+            "surgery_history": forms.Select(attrs={"class": "glass-input"}),
+            "surgery_details": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 2}),
+            "cold_sore": forms.Select(attrs={"class": "glass-input"}),
+            "medication_history": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
+            "other_medications": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 2}),
+            "substance_use": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
+            "patient_image": forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
+            "front_face_image": forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
+            "referral_source": forms.Select(attrs={"class": "glass-input"}),
+            "message": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 4}),
+        }
+        labels = {
+            "patient_image": "عکس فرم بینی مد نظر شما",
+            "front_face_image": "عکس تمام رخ شما",
+        }
+
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"].strip()
+        digits = re.sub(r"\D", "", phone)
+        if len(digits) < 10 or len(digits) > 15:
+            raise ValidationError("شماره تماس معتبر نیست.")
+        return phone
+
+    def clean_birth_date(self):
+        birth_date = self.cleaned_data["birth_date"].strip()
+        if not re.fullmatch(r"[۰-۹0-9]{4}/[۰-۹0-9]{2}/[۰-۹0-9]{2}", birth_date):
+            raise ValidationError("تاریخ تولد را به صورت شمسی وارد کنید.")
+        return birth_date
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get("surgery_history") == "no":
+            cleaned_data["surgery_details"] = ""
+        return cleaned_data
 
 
 class StaffUserCreateForm(forms.ModelForm):
