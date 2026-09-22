@@ -46,6 +46,7 @@
                         <th>نام</th>
                         <th>تلفن</th>
                         <th>پزشک</th>
+                        <th>عمل درخواستی</th>
                         <th>وضعیت</th>
                         <th>تاریخ</th>
                         <th>عملیات</th>
@@ -57,6 +58,7 @@
                         <td>{{ req.name }}</td>
                         <td dir="ltr">{{ req.phone }}</td>
                         <td>{{ req.doctor.name }}</td>
+                        <td>{{ req.requested_procedures|default:"ثبت نشده" }}</td>
                         <td><span class="status-badge status-{{ req.status }}">{{ req.get_status_display }}</span></td>
                         <td>{{ req.created_at|date:"Y/m/d H:i" }}</td>
                         <td>

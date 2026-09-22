@@ -73,6 +73,10 @@
                 <span class="detail-value">{{ consultation.substance_use }}</span>
             </div>
             <div class="detail-row">
+                <span class="detail-label">عمل درخواستی</span>
+                <span class="detail-value">{{ consultation.requested_procedures|default:"ثبت نشده" }}</span>
+            </div>
+            <div class="detail-row">
                 <span class="detail-label">نحوه آشنایی</span>
                 <span class="detail-value">{{ consultation.get_referral_source_display }}</span>
             </div>

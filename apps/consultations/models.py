@@ -56,6 +56,23 @@ class ConsultationRequest(models.Model):
     medication_history = models.TextField(verbose_name="سابقه دارویی")
     other_medications = models.TextField(blank=True, verbose_name="داروهای دیگر")
     substance_use = models.TextField(verbose_name="مصرف دخانیات و مواد")
+    REQUESTED_PROCEDURE_CHOICES = [
+        ("rhinoplasty", "عمل بینی (رینوپلاستی)"),
+        ("genioplasty", "جراحی چانه (ژنیوپلاستی)"),
+        ("blepharoplasty", "جراحی پلک (بلفاروپلاستی)"),
+        ("endoscopic_temporal_lift", "لیفت شقیقه (اندوسکوپیک)"),
+        ("endoscopic_forehead_lift", "لیفت پیشانی اندوسکوپیک"),
+        ("facelift", "لیفت صورت"),
+        ("buccal_fat_removal", "تخلیه چربی گونه (باکال فت)"),
+        ("buccal_fat_removal_deep", "تخلیه چربی غبغب"),
+        ("jaw_surgery", "جراحی فک"),
+        ("lip_filler", "سانترال لب"),
+        ("dental_implant", "ایمپلنت دندان"),
+    ]
+    requested_procedures = models.TextField(
+        blank=True,
+        verbose_name="عمل درخواستی",
+    )
     REFERRAL_SOURCE_CHOICES = [
         ("instagram", "اینستاگرام"),
         ("telegram", "تلگرام"),

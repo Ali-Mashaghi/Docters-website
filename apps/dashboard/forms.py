@@ -45,6 +45,13 @@ class ConsultationRecordForm(forms.ModelForm):
 
 
 class ConsultationEditForm(forms.ModelForm):
+    requested_procedures = forms.MultipleChoiceField(
+        choices=ConsultationRequest.REQUESTED_PROCEDURE_CHOICES,
+        label="عمل درخواستی",
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
     class Meta:
         model = ConsultationRequest
         fields = (
@@ -61,6 +68,7 @@ class ConsultationEditForm(forms.ModelForm):
             "medication_history",
             "other_medications",
             "substance_use",
+            "requested_procedures",
             "patient_image",
             "front_face_image",
             "referral_source",
@@ -80,6 +88,7 @@ class ConsultationEditForm(forms.ModelForm):
             "medication_history": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
             "other_medications": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 2}),
             "substance_use": forms.Textarea(attrs={"class": "glass-input glass-textarea", "rows": 3}),
+            "requested_procedures": forms.CheckboxSelectMultiple(),
             "patient_image": forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
             "front_face_image": forms.ClearableFileInput(attrs={"accept": "image/jpeg,image/png,image/webp"}),
             "referral_source": forms.Select(attrs={"class": "glass-input"}),
@@ -89,6 +98,18 @@ class ConsultationEditForm(forms.ModelForm):
             "patient_image": "عکس فرم بینی مد نظر شما",
             "front_face_image": "عکس تمام رخ شما",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.requested_procedures:
+            labels_to_values = {
+                label: value
+                for value, label in ConsultationRequest.REQUESTED_PROCEDURE_CHOICES
+            }
+            self.initial["requested_procedures"] = [
+                labels_to_values.get(label.strip(), label.strip())
+                for label in self.instance.requested_procedures.split("،")
+            ]
 
     def clean_phone(self):
         phone = self.cleaned_data["phone"].strip()
@@ -108,6 +129,17 @@ class ConsultationEditForm(forms.ModelForm):
         if cleaned_data.get("surgery_history") == "no":
             cleaned_data["surgery_details"] = ""
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        procedure_labels = dict(ConsultationRequest.REQUESTED_PROCEDURE_CHOICES)
+        instance.requested_procedures = "، ".join(
+            procedure_labels[value]
+            for value in self.cleaned_data.get("requested_procedures", [])
+        )
+        if commit:
+            instance.save()
+        return instance
 
 
 class StaffUserCreateForm(forms.ModelForm):

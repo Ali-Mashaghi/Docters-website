@@ -40,6 +40,12 @@ SUBSTANCE_USE_CHOICES = (
 
 
 class ConsultationRequestForm(forms.ModelForm):
+    requested_procedures = forms.MultipleChoiceField(
+        choices=ConsultationRequest.REQUESTED_PROCEDURE_CHOICES,
+        label="عمل درخواستی",
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
     medical_history = forms.MultipleChoiceField(
         choices=MEDICAL_HISTORY_CHOICES,
         label="سابقه پزشکی",
@@ -102,6 +108,7 @@ class ConsultationRequestForm(forms.ModelForm):
             "medication_history",
             "other_medications",
             "substance_use",
+            "requested_procedures",
             "patient_image",
             "front_face_image",
             "referral_source",
@@ -178,6 +185,7 @@ class ConsultationRequestForm(forms.ModelForm):
             "medication_history": "موارد بسیار مهم",
             "other_medications": "داروهای دیگر",
             "substance_use": "آیا دخانیات یا مواد مصرف می‌کنید؟",
+            "requested_procedures": "عمل درخواستی",
             "referral_source": "نحوه آشنایی با ما",
             "patient_image": "عکس فرم بینی مد نظر شما",
             "front_face_image": "عکس تمام رخ خودتون",
@@ -194,6 +202,10 @@ class ConsultationRequestForm(forms.ModelForm):
         )
         instance.substance_use = self._selected_labels(
             self.cleaned_data["substance_use"], SUBSTANCE_USE_CHOICES
+        )
+        instance.requested_procedures = self._selected_labels(
+            self.cleaned_data["requested_procedures"],
+            ConsultationRequest.REQUESTED_PROCEDURE_CHOICES,
         )
         if commit:
             instance.save()

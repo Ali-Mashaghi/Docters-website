@@ -113,6 +113,17 @@ class PermissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_consultation_list_displays_requested_procedure(self):
+        self.request_a.requested_procedures = "عمل بینی (رینوپلاستی)"
+        self.request_a.save(update_fields=["requested_procedures"])
+        self.client.login(username="staff_a", password="testpass123")
+
+        response = self.client.get(reverse("dashboard:consultations"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "عمل درخواستی")
+        self.assertContains(response, "عمل بینی (رینوپلاستی)")
+
     def test_dashboard_detail_displays_remaining_uploaded_patient_images(self):
         self.client.login(username="staff_a", password="testpass123")
         url = reverse(
@@ -301,6 +312,7 @@ class PermissionTestCase(TestCase):
             "medication_history": ["vitamins"],
             "other_medications": "آنتی‌بیوتیک",
             "substance_use": ["none"],
+            "requested_procedures": ["rhinoplasty"],
             "referral_source": "instagram",
             "message": "سلام",
         })
@@ -313,6 +325,7 @@ class PermissionTestCase(TestCase):
         self.assertEqual(consultation.surgery_history, "no")
         self.assertEqual(consultation.surgery_details, "")
         self.assertEqual(consultation.other_medications, "آنتی‌بیوتیک")
+        self.assertEqual(consultation.requested_procedures, "عمل بینی (رینوپلاستی)")
 
     def test_none_choice_cannot_be_combined_with_other_history(self):
         form_data = {
